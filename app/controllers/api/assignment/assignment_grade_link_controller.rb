@@ -5,7 +5,7 @@ module Api
         assignment_grade_link_record = AssignmentGradeLink.new(create_params)
 
         if assignment_grade_link_record.save
-          render jsonapi: role_record, status: :created
+          render jsonapi: assignment_grade_link_record, status: :created
           return
         else
           render jsonapi: { errors: assignment_grade_link_record.errors}, status: :unprocessable_entity

@@ -71,6 +71,8 @@ yarn-debug.log*
 # Ignore Windows alt data stream files
 *.Zone.Identifier
 *:Zone.Identifier
+README.mdZone.Identifier
+gitignoreZone.Identifier
 
 # Ignore editor folders
 .vscode/

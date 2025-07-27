@@ -5,7 +5,7 @@ module Api
         course_schedule_override_record = CourseScheduleOverride.new(create_params)
 
         if course_schedule_override_record.save
-          render jsonapi: role_record, status: :created
+          render jsonapi: course_schedule_override_record, status: :created
           return
         else
           render jsonapi: { errors: course_schedule_override_record.errors}, status: :unprocessable_entity

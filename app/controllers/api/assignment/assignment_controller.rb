@@ -5,7 +5,7 @@ module Api
         assignment_record = Assignment.new(create_params)
 
         if assignment_record.save
-          render jsonapi: role_record, status: :created
+          render jsonapi: assignment_record, status: :created
           return
         else
           render jsonapi: { errors: assignment_record.errors}, status: :unprocessable_entity
