@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_21_164038) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_27_213657) do
   create_schema "assignment"
   create_schema "course"
   create_schema "users"
@@ -19,11 +19,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_21_164038) do
   enable_extension "pg_catalog.plpgsql"
 
   create_table "assignment", force: :cascade do |t|
-    t.bigint "course_schedule_id"
-    t.datetime "due_date"
-    t.string "title"
+    t.bigint "course_schedule_id", null: false
+    t.datetime "due_date", null: false
+    t.string "title", null: false
     t.string "description"
-    t.decimal "points_possible"
+    t.decimal "points_possible", null: false
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -31,8 +31,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_21_164038) do
   end
 
   create_table "assignment_grade_link", force: :cascade do |t|
-    t.bigint "grade_id"
-    t.bigint "assignment_id"
+    t.bigint "grade_id", null: false
+    t.bigint "assignment_id", null: false
     t.datetime "submitted_at"
     t.datetime "graded_at"
     t.decimal "grade"
@@ -46,20 +46,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_21_164038) do
   end
 
   create_table "course", force: :cascade do |t|
-    t.string "name"
-    t.string "semester"
-    t.string "year"
-    t.string "code"
+    t.string "name", null: false
+    t.string "semester", null: false
+    t.string "year", null: false
+    t.string "code", null: false
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "course_schedule", force: :cascade do |t|
-    t.string "name"
-    t.bigint "course_id"
-    t.datetime "start_date"
-    t.datetime "end_date"
+    t.string "name", null: false
+    t.bigint "course_id", null: false
+    t.datetime "start_date", null: false
+    t.datetime "end_date", null: false
     t.jsonb "schedule_json", default: {}
     t.string "status"
     t.datetime "created_at", null: false
@@ -68,8 +68,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_21_164038) do
   end
 
   create_table "course_schedule_link", force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "course_schedule_id"
+    t.bigint "user_id", null: false
+    t.bigint "course_schedule_id", null: false
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -78,9 +78,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_21_164038) do
   end
 
   create_table "course_schedule_override", force: :cascade do |t|
-    t.bigint "course_schedule_id"
-    t.datetime "override_date"
-    t.jsonb "schedule_json"
+    t.bigint "course_schedule_id", null: false
+    t.datetime "override_date", null: false
+    t.jsonb "schedule_json", null: false
     t.string "notes"
     t.string "status"
     t.datetime "created_at", null: false
@@ -89,8 +89,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_21_164038) do
   end
 
   create_table "grade", force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "course_id"
+    t.bigint "user_id", null: false
+    t.bigint "course_id", null: false
     t.decimal "final_grade"
     t.string "comments"
     t.string "status"
@@ -101,7 +101,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_21_164038) do
   end
 
   create_table "role", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -114,17 +114,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_21_164038) do
   end
 
   create_table "user", force: :cascade do |t|
-    t.string "name"
-    t.string "email"
-    t.string "encrypted_password"
+    t.string "name", null: false
+    t.string "email", null: false
+    t.string "encrypted_password", null: false
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "user_role_link", force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "role_id"
+    t.bigint "user_id", null: false
+    t.bigint "role_id", null: false
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
