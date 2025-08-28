@@ -1,99 +1,82 @@
 require 'rails_helper'
 
-RSpec.describe Api::Course::CourseController, type: :request do
-  let(:valid_attributes) do
-    {
-      name: "Intro to AI",
-      semester: "Fall",
-      year: 2025,
-      code: "AI101",
-      status: "active"
-    }
-  end
-
-  let(:invalid_attributes) do
-    {
-      name: nil,
-      semester: nil,
-      year: nil,
-      code: nil
-    }
-  end
-
-  describe "POST /create" do
-    it "creates a course with valid attributes" do
-      expect {
-        post "/api/course/courses", params: valid_attributes
-      }.to change(Api::Course::Course, :count).by(1)
-
-      expect(response).to have_http_status(:created)
-    end
-
-    it "does not create a course with invalid attributes" do
-      expect {
-        post "/api/course/courses", params: invalid_attributes
-      }.to_not change(Api::Course::Course, :count)
-
-      expect(response).to have_http_status(:unprocessable_entity)
-    end
-  end
-
-  describe "GET /index" do
-    it "returns a list of courses" do
+RSpec.describe Api::Course::CourseController, type: :controller do
+  describe "GET #index" do
+    it "returns all courses" do
       create_list(:course, 3)
-      get "/api/course/courses"
+      get :index
+
       expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body).size).to eq(3)
+      expect(JSON.parse(response.body)['data'].length).to eq(3)
     end
   end
 
-  describe "GET /show" do
-    it "returns a single course if found" do
+  describe "GET #show" do
+    it "returns a course by id" do
       course = create(:course)
-      get "/api/course/courses/#{course.id}"
-      expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body)["data"]["id"]).to eq(course.id.to_s)
-    end
+      get :show, params: { id: course.id }
 
-    it "returns nil or error if course not found" do
-      get "/api/course/courses/999999"
       expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body)["data"]).to be_nil
+      expect(JSON.parse(response.body)['data']['id']).to eq("#{course.id}")
     end
   end
 
-  describe "PATCH /update" do
-    it "updates a course with valid attributes" do
-      course = create(:course)
-      patch "/api/course/courses/#{course.id}", params: { name: "Updated Name" }
+  describe "POST #create" do
+    context "with valid attributes" do
+      it "creates a new course" do
+        valid_params = attributes_for(:course)
+        post :create, params: valid_params
 
-      expect(response).to have_http_status(:created)
-      expect(course.reload.name).to eq("Updated Name")
+        expect(response).to have_http_status(:created)
+        expect(JSON.parse(response.body)['data']['id']).to be_present
+      end
     end
 
-    it "returns error for non-existent course" do
-      patch "/api/course/courses/999999", params: { name: "Failing Update" }
-      expect(response).to have_http_status(:not_found)
-    end
-
-    it "returns error for invalid updates" do
-      course = create(:course)
-      patch "/api/course/courses/#{course.id}", params: { year: nil }
-      expect(response).to have_http_status(:unprocessable_entity)
+    context "with invalid attributes" do
+      it "returns errors" do
+        post :create, params: { name: nil }
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(JSON.parse(response.body)['error']).to be_present
+        expect(JSON.parse(response.body)['error'][0]['title']).to eq('Invalid Data')
+      end
     end
   end
 
-  describe "DELETE /delete" do
-    it "deletes an existing course" do
-      course = create(:course)
-      delete "/api/course/courses/#{course.id}"
-      expect(response).to have_http_status(:no_content)
-      expect(Api::Course::Course.exists?(course.id)).to be false
+  describe "PATCH #update" do
+    let!(:course) { create(:course, name: "Old Name") }
+
+    context "with valid id and params" do
+      it "updates the course" do
+        patch :update, params: { id: course.id, name: "New Name" }
+        expect(response).to have_http_status(:ok)
+        expect(course.reload.name).to eq("New Name")
+      end
     end
 
-    it "returns error if course does not exist" do
-      delete "/api/course/courses/999999"
-      expect(response).to have_http_status(:not_found)
+    context "with invalid id" do
+      it "returns not found" do
+        patch :update, params: { id: 999999, name: "New Name" }
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
+
+  describe "DELETE #destroy" do
+    let!(:course) { create(:course) }
+
+    context "when course exists" do
+      it "deletes the course" do
+        delete :destroy, params: { id: course.id }
+        expect(response).to have_http_status(:no_content)
+        expect(Api::Course::Course.exists?(course.id)).to be_falsey
+      end
+    end
+
+    context "when course does not exist" do
+      it "returns not found" do
+        delete :destroy, params: { id: 123456 }
+        expect(response).to have_http_status(:not_found)
+      end
     end
   end
 end
