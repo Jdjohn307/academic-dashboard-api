@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_27_213657) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_06_150956) do
   create_schema "assignment"
   create_schema "course"
+  create_schema "reporting"
   create_schema "users"
 
   # These are extensions that must be enabled in order to support this database

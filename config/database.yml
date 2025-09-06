@@ -21,7 +21,7 @@ default: &default
   username: dev_rails
   password: dev
   host: localhost
-  schema_search_path: "public,users,assignment,course"
+  schema_search_path: "public,users,assignment,course,reporting"
 
 
 
