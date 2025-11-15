@@ -37,7 +37,7 @@ RSpec.describe Api::Users::RoleController, type: :controller do
         post :create, params: { apples: nil }
 
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body)['error']).to be_present
+        expect(JSON.parse(response.body)['errors']).to be_present
       end
     end
   end

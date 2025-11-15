@@ -36,8 +36,8 @@ RSpec.describe Api::Course::CourseController, type: :controller do
       it "returns errors" do
         post :create, params: { name: nil }
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body)['error']).to be_present
-        expect(JSON.parse(response.body)['error'][0]['title']).to eq('Invalid Data')
+        expect(JSON.parse(response.body)['errors']).to be_present
+        expect(JSON.parse(response.body)['errors'][0]['title']).to eq('Invalid Data')
       end
     end
   end
