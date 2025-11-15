@@ -11,29 +11,26 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+  namespace :api do
+      namespace :assignment do
+      resources :assignment
+      resources :assignment_grade_link
+      end
 
-  Rails.application.routes.draw do
-    namespace :api do
-       namespace :assignment do
-        resources :assignment
-        resources :assignment_grade_link
-       end
+      namespace :course do
+      resources :course
+      resources :course_schedule
+      resources :course_schedule_link
+      resources :course_schedule_override
+      end
 
-       namespace :course do
-        resources :course
-        resources :course_schedule
-        resources :course_schedule_link
-        resources :course_schedule_override
-       end
-
-       namespace :users do
-        resources :grade
-        resources :role
-        resources :user
-        resources :user_role_link
-       end
-      
-       resources :test_table
-    end
+      namespace :users do
+      resources :grade
+      resources :role
+      resources :user
+      resources :user_role_link
+      end
+    
+      resources :test_table
   end
 end
