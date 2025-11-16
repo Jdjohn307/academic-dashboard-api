@@ -19,7 +19,7 @@ module Api
       }
 
       validates :status, inclusion: { 
-        in: %w(active inactive draft published submitted graded archived),
+        in: ['active', 'inactive', 'draft', 'published', 'archived'],
         message: "%{value} is not a valid status" 
       }
 

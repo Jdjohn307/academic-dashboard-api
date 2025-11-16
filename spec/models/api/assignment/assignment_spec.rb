@@ -27,8 +27,8 @@ RSpec.describe Api::Assignment::Assignment, type: :model do
     it { should validate_presence_of(:points_possible) }
     it { should validate_numericality_of(:points_possible) }
 
-    it { should_not validate_presence_of(:status) }
     context "| 'status' Validator |" do
+      it { should_not validate_presence_of(:status) }
       let!(:course) { create(:course) }
       let!(:course_schedule) { create(:course_schedule, course: course) }
 
@@ -40,10 +40,10 @@ RSpec.describe Api::Assignment::Assignment, type: :model do
           .with_message("#{Shoulda::Matchers::ExampleClass} is not a valid status")
       end
     end
-
-    it { should validate_presence_of(:due_date) }
+   
     # shoulda-matches can not validate dynamic values
     context "| 'due_date' Validator |" do
+      it { should validate_presence_of(:due_date) }
       let!(:course) { create(:course) }
       let!(:course_schedule) { create(:course_schedule, course: course) }
       it "is invalid if due_date is after the course_schedule end_date" do
