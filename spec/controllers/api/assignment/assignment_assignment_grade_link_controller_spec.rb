@@ -27,7 +27,7 @@ RSpec.describe Api::Assignment::AssignmentGradeLinkController, type: :controller
   describe "POST #create" do
     context "with valid attributes" do
       it "creates an assignment grade link" do
-        valid_params = {assignment_id: assignment.id, grade_id: grade_record.id, points: 10 }
+        valid_params = attributes_for(:assignment_grade_link).merge(assignment_id: assignment.id, grade_id: grade_record.id)
         post :create, params: valid_params
 
         expect(response).to have_http_status(:created)
