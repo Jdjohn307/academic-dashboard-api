@@ -6,10 +6,8 @@ module Api
 
         if course_record.save
           render jsonapi: course_record, status: :created
-          nil
         else
           render json: { error: [ { title: "Error", detail: course_record.errors } ] }, status: :unprocessable_entity
-          nil
         end
       end
 
@@ -17,12 +15,10 @@ module Api
         course_record = Course.find_by(id: show_params["id"])
 
         render jsonapi: course_record, status: :ok
-        nil
       end
 
       def index
         render jsonapi: Course.all, status: :ok
-        nil
       end
 
       def update
@@ -35,10 +31,8 @@ module Api
 
         if course_record.update(update_params)
           render jsonapi: course_record, status: :ok
-          nil
         else
           render json: { error: [ { title: "Error", detail: course_record.errors } ] }, status: :unprocessable_entity
-          nil
         end
       end
 
@@ -52,13 +46,10 @@ module Api
 
         if course_record.destroy
           render json: {}, status: :no_content
-          nil
         else
           render json: { error: [ { title: "Error", detail: course_record.errors } ] }, status: :unprocessable_entity
-          nil
         end
       end
-
       private
 
       def create_params

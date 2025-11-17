@@ -8,10 +8,8 @@ module Api
 
         if assignment_record.save
           render jsonapi: assignment_record, status: :created
-          nil
         else
           render json: { errors: [ { title: "Unprocessable Entity", detail: assignment_record.errors, status: :unprocessable_entity } ] }, status: :unprocessable_entity
-          nil
         end
       end
 
@@ -22,14 +20,12 @@ module Api
         end
 
         render jsonapi: @assignment_record, status: :ok
-        nil
       end
 
       # Todo: add pagination, filtering, and ordering
       def index
         assignments = Assignment.all
         render jsonapi: assignments, status: :ok
-        nil
       end
 
       def update
@@ -40,10 +36,8 @@ module Api
 
         if @assignment_record.update(update_params)
           render jsonapi: @assignment_record, status: :ok
-          nil
         else
           render json: { errors: [ { title: "Unprocessable Entity", detail: @assignment_record.errors, status: :unprocessable_entity } ] }, status: :unprocessable_entity
-          nil
         end
       end
 
@@ -55,10 +49,8 @@ module Api
 
         if @assignment_record.destroy
           render json: {}, status: :no_content
-          nil
         else
           render json: { errors: [ { title: "Unprocessable Entity", detail: @assignment_record.errors, status: :unprocessable_entity } ] }, status: :unprocessable_entity
-          nil
         end
       end
 

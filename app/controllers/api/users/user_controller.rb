@@ -6,10 +6,8 @@ module Api
 
         if user_record.save
           render jsonapi: user_record, status: :created
-          nil
         else
           render json: { error: [ { title: "Error", detail: user_record.errors } ] }, status: :unprocessable_entity
-          nil
         end
       end
 
@@ -17,12 +15,10 @@ module Api
         user_record = User.find_by(id: show_params["id"])
 
         render jsonapi: user_record, status: :ok
-        nil
       end
 
       def index
         render jsonapi: User.all, status: :ok
-        nil
       end
 
       def update
@@ -35,10 +31,8 @@ module Api
 
         if user_record.update(update_params)
           render jsonapi: user_record, status: :ok
-          nil
         else
           render json: { error: [ { title: "Error", detail: user_record.errors } ] }, status: :unprocessable_entity
-          nil
         end
       end
 
@@ -52,10 +46,8 @@ module Api
 
         if user_record.destroy
           render json: {}, status: :no_content
-          nil
         else
           render json: { error: [ { title: "Error", detail: user_record.errors } ] }, status: :unprocessable_entity
-          nil
         end
       end
 

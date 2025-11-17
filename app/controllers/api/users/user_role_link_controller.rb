@@ -6,10 +6,8 @@ module Api
 
         if user_role_link_record.save
           render jsonapi: user_role_link_record, status: :created
-          nil
         else
           render json: { error: [ { title: "Error", detail: user_role_link_record.errors } ] }, status: :unprocessable_entity
-          nil
         end
       end
 
@@ -17,12 +15,10 @@ module Api
         user_role_link_record = UserRoleLink.find_by(id: show_params["id"])
 
         render jsonapi: user_role_link_record, status: :ok
-        nil
       end
 
       def index
         render jsonapi: UserRoleLink.all, status: :ok
-        nil
       end
 
       def update
@@ -35,10 +31,8 @@ module Api
 
         if user_role_link_record.update(update_params)
           render jsonapi: user_role_link_record, status: :ok
-          nil
         else
           render json: { error: [ { title: "Error", detail: user_role_link_record.errors } ] }, status: :unprocessable_entity
-          nil
         end
       end
 
@@ -52,10 +46,8 @@ module Api
 
         if user_role_link_record.destroy
           render json: {}, status: :no_content
-          nil
         else
           render json: { error: [ { title: "Error", detail: user_role_link_record.errors } ] }, status: :unprocessable_entity
-          nil
         end
       end
 
