@@ -8,7 +8,7 @@ module Api
           render jsonapi: course_record, status: :created
           nil
         else
-          render json: { error: [ { title: "Error", detail: course_schedule_link_record.errors } ] }, status: :unprocessable_entity
+          render json: { error: [ { title: "Error", detail: course_record.errors } ] }, status: :unprocessable_entity
           nil
         end
       end
@@ -37,7 +37,7 @@ module Api
           render jsonapi: course_record, status: :ok
           nil
         else
-          render json: { error: [ { title: "Error", detail: course_schedule_link_record.errors } ] }, status: :unprocessable_entity
+          render json: { error: [ { title: "Error", detail: course_record.errors } ] }, status: :unprocessable_entity
           nil
         end
       end
