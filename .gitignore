@@ -85,4 +85,6 @@ yarn-debug.log*
 
 # Ignore credentials and secrets
 /config/master.key
+.kamal/secretsapp/notes.rb
 .kamal/secrets
+app/notes.rb
