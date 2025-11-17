@@ -1,6 +1,7 @@
 module Api
   module Assignment
     class SerializableAssignmentGradeLink < JSONAPI::Serializable::Resource
+      type "assignment_grade_links"
       attributes :grade_id, :assignment_id, :submitted_at, :graded_at,
         :grade, :points, :feedback, :status
     end
