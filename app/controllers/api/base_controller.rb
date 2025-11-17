@@ -7,7 +7,7 @@ module Api
     private
 
     def handle_not_null_violation(exception)
-      render json: { errors: [{ title: 'Invalid Data', detail: exception.message, status: :unprocessable_entity }] }, status: :unprocessable_entity
+      render json: { errors: [ { title: "Invalid Data", detail: exception.message, status: :unprocessable_entity } ] }, status: :unprocessable_entity
     end
   end
 end

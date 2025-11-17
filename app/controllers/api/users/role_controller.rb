@@ -6,56 +6,56 @@ module Api
 
         if role_record.save
           render jsonapi: role_record, status: :created
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: role_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: role_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 
       def show
-        role_record = Role.find_by(id: show_params['id'])
-        
+        role_record = Role.find_by(id: show_params["id"])
+
         render jsonapi: role_record, status: :ok
-        return
+        nil
       end
 
       def index
         render jsonapi: Role.all, status: :ok
-        return
+        nil
       end
 
       def update
-        role_record = Role.find_by(id: update_params['id'])
+        role_record = Role.find_by(id: update_params["id"])
 
         if role_record.blank?
-          render json: {error: [{ title: 'Error', detail: "Role Not Found." }] }, status: :not_found
+          render json: { error: [ { title: "Error", detail: "Role Not Found." } ] }, status: :not_found
           return
         end
 
         if role_record.update(update_params)
           render jsonapi: role_record, status: :ok
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: role_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: role_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 
       def destroy
-        role_record = Role.find_by(id: delete_params['id'])
+        role_record = Role.find_by(id: delete_params["id"])
 
         if role_record.blank?
-          render json: {error: [{ title: 'Error', detail: "Role Not Found." }] }, status: :not_found
+          render json: { error: [ { title: "Error", detail: "Role Not Found." } ] }, status: :not_found
           return
         end
 
         if role_record.destroy
           render json: {}, status: :no_content
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: role_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: role_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 

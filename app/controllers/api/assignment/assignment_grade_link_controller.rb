@@ -6,56 +6,56 @@ module Api
 
         if assignment_grade_link_record.save
           render jsonapi: assignment_grade_link_record, status: :created
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: assignment_grade_link_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: assignment_grade_link_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 
       def show
-        assignment_grade_link_record = AssignmentGradeLink.find_by(id: show_params['id'])
-        
+        assignment_grade_link_record = AssignmentGradeLink.find_by(id: show_params["id"])
+
         render jsonapi: assignment_grade_link_record, status: :ok
-        return
+        nil
       end
 
       def index
         render jsonapi: AssignmentGradeLink.all, status: :ok
-        return
+        nil
       end
 
       def update
-        assignment_grade_link_record = AssignmentGradeLink.find_by(id: update_params['id'])
+        assignment_grade_link_record = AssignmentGradeLink.find_by(id: update_params["id"])
 
         if assignment_grade_link_record.blank?
-          render json: {error: [{ title: 'Error', detail: "Assignment Grade Link Not Found." }] }, status: :not_found
+          render json: { error: [ { title: "Error", detail: "Assignment Grade Link Not Found." } ] }, status: :not_found
           return
         end
 
         if assignment_grade_link_record.update(update_params)
           render jsonapi: assignment_grade_link_record, status: :ok
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: assignment_grade_link_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: assignment_grade_link_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 
       def destroy
-        assignment_grade_link_record = AssignmentGradeLink.find_by(id: delete_params['id'])
+        assignment_grade_link_record = AssignmentGradeLink.find_by(id: delete_params["id"])
 
         if assignment_grade_link_record.blank?
-          render json: {error: [{ title: 'Error', detail: "Assignment Grade Link Not Found." }] }, status: :not_found
+          render json: { error: [ { title: "Error", detail: "Assignment Grade Link Not Found." } ] }, status: :not_found
           return
         end
 
         if assignment_grade_link_record.destroy
           render json: {}, status: :no_content
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: assignment_grade_link_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: assignment_grade_link_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 

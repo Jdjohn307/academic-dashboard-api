@@ -21,19 +21,19 @@ gem "jbuilder"
 # Useful for APIs to structure output and include relationships.
 # Docs: https://github.com/rails-api/active_model_serializers
 # Gem:  https://rubygems.org/gems/active_model_serializers
-gem 'active_model_serializers', '~> 0.10.15'
+gem "active_model_serializers", "~> 0.10.15"
 
 # JSON:API support for Rails controllers — provides request/response formatting, error handling, and integration with jsonapi-serializer.
 # Follows the JSON:API spec: https://jsonapi.org/
 # Docs: https://github.com/jsonapi-rb/jsonapi-rails
 # Gem:  https://rubygems.org/gems/jsonapi-rails
-gem 'jsonapi-rails', '~> 0.4.1'
+gem "jsonapi-rails", "~> 0.4.1"
 
 # Fast and flexible serializer for generating JSON:API-compliant output.
 # Successor to fast_jsonapi — compatible with jsonapi-rails.
 # Docs: https://github.com/jsonapi-serializer/jsonapi-serializer
 # Gem:  https://rubygems.org/gems/jsonapi-serializer
-gem 'jsonapi-serializer', '~> 2.2'
+gem "jsonapi-serializer", "~> 2.2"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
@@ -71,17 +71,17 @@ group :development, :test do
   # RSpec: Behavior-driven test framework for Ruby
   # GitHub: https://github.com/rspec/rspec-rails
   # RubyGems: https://rubygems.org/gems/rspec-rails
-  gem 'rspec-rails'
+  gem "rspec-rails"
 
   # FactoryBot: Fixtures replacement for generating test data
   # GitHub: https://github.com/thoughtbot/factory_bot_rails
   # RubyGems: https://rubygems.org/gems/factory_bot_rails
-  gem 'factory_bot_rails'
+  gem "factory_bot_rails"
 
   # Database Cleaner: Cleans the database between tests to ensure isolation
   # GitHub: https://github.com/DatabaseCleaner/database_cleaner-active_record
   # RubyGems: https://rubygems.org/gems/database_cleaner-active_record
-  gem 'database_cleaner-active_record'
+  gem "database_cleaner-active_record"
 end
 
 group :development do
@@ -93,5 +93,5 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
-  gem 'shoulda-matchers', '~> 6.0'
+  gem "shoulda-matchers", "~> 6.0"
 end

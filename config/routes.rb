@@ -30,7 +30,7 @@ Rails.application.routes.draw do
       resources :user
       resources :user_role_link
       end
-    
+
       resources :test_table
   end
 end

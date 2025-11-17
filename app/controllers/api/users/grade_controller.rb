@@ -6,56 +6,56 @@ module Api
 
         if grade_record.save
           render jsonapi: grade_record, status: :created
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: grade_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: grade_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 
       def show
-        grade_record = Grade.find_by(id: show_params['id'])
-        
+        grade_record = Grade.find_by(id: show_params["id"])
+
         render jsonapi: grade_record, status: :ok
-        return
+        nil
       end
 
       def index
         render jsonapi: Grade.all, status: :ok
-        return
+        nil
       end
 
       def update
-        grade_record = Grade.find_by(id: update_params['id'])
+        grade_record = Grade.find_by(id: update_params["id"])
 
         if grade_record.blank?
-          render json: {error: [{ title: 'Error', detail: "Grade Not Found." }] }, status: :not_found
+          render json: { error: [ { title: "Error", detail: "Grade Not Found." } ] }, status: :not_found
           return
         end
 
         if grade_record.update(update_params)
           render jsonapi: grade_record, status: :ok
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: grade_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: grade_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 
       def destroy
-        grade_record = Grade.find_by(id: delete_params['id'])
+        grade_record = Grade.find_by(id: delete_params["id"])
 
         if grade_record.blank?
-          render json: {error: [{ title: 'Error', detail: "Grade Not Found." }] }, status: :not_found
+          render json: { error: [ { title: "Error", detail: "Grade Not Found." } ] }, status: :not_found
           return
         end
 
         if grade_record.destroy
           render json: {}, status: :no_content
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: grade_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: grade_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 

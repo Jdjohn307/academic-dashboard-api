@@ -23,7 +23,7 @@ module RailsProj
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
     config.read_encrypted_secrets = true
-    
+
     config.active_record.schema_format = :ruby
   end
 end

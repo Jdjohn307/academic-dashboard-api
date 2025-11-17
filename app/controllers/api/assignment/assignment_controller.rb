@@ -8,57 +8,57 @@ module Api
 
         if assignment_record.save
           render jsonapi: assignment_record, status: :created
-          return
+          nil
         else
-          render json: {errors: [{ title: 'Unprocessable Entity',detail: assignment_record.errors, status: :unprocessable_entity }] }, status: :unprocessable_entity
-          return
+          render json: { errors: [ { title: "Unprocessable Entity", detail: assignment_record.errors, status: :unprocessable_entity } ] }, status: :unprocessable_entity
+          nil
         end
       end
 
       def show
         if @assignment_record.blank?
-          render json: {errors: [{ title: 'Not Found', detail: "Assignment Not Found.", status: :not_found }] }, status: :not_found
+          render json: { errors: [ { title: "Not Found", detail: "Assignment Not Found.", status: :not_found } ] }, status: :not_found
           return
         end
 
         render jsonapi: @assignment_record, status: :ok
-        return
+        nil
       end
 
       # Todo: add pagination, filtering, and ordering
       def index
         assignments = Assignment.all
         render jsonapi: assignments, status: :ok
-        return
+        nil
       end
 
       def update
         if @assignment_record.blank?
-          render json: {errors: [{ title: 'Not Found', detail: "Assignment Not Found.", status: :not_found }] }, status: :not_found
+          render json: { errors: [ { title: "Not Found", detail: "Assignment Not Found.", status: :not_found } ] }, status: :not_found
           return
         end
 
         if @assignment_record.update(update_params)
           render jsonapi: @assignment_record, status: :ok
-          return
+          nil
         else
-          render json: {errors: [{ title: 'Unprocessable Entity', detail: @assignment_record.errors, status: :unprocessable_entity }] }, status: :unprocessable_entity
-          return
+          render json: { errors: [ { title: "Unprocessable Entity", detail: @assignment_record.errors, status: :unprocessable_entity } ] }, status: :unprocessable_entity
+          nil
         end
       end
 
       def destroy
         if @assignment_record.blank?
-          render json: {errors: [{ title: 'Not Found', detail: "Assignment Not Found.", status: :not_found }] }, status: :not_found
+          render json: { errors: [ { title: "Not Found", detail: "Assignment Not Found.", status: :not_found } ] }, status: :not_found
           return
         end
 
         if @assignment_record.destroy
           render json: {}, status: :no_content
-          return
+          nil
         else
-          render json: {errors: [{ title: 'Unprocessable Entity', detail: @assignment_record.errors, status: :unprocessable_entity }] }, status: :unprocessable_entity
-          return
+          render json: { errors: [ { title: "Unprocessable Entity", detail: @assignment_record.errors, status: :unprocessable_entity } ] }, status: :unprocessable_entity
+          nil
         end
       end
 

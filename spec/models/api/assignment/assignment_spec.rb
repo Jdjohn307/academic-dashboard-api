@@ -36,11 +36,11 @@ RSpec.describe Api::Assignment::Assignment, type: :model do
 
       it do
         should validate_inclusion_of(:status)
-          .in_array(%w(active inactive draft published submitted graded archived))
+          .in_array(%w[active inactive draft published submitted graded archived])
           .with_message("#{Shoulda::Matchers::ExampleClass} is not a valid status")
       end
     end
-   
+
     # shoulda-matches can not validate dynamic values
     context "| 'due_date' Validator |" do
       it { should validate_presence_of(:due_date) }

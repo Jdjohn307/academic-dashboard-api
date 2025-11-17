@@ -25,7 +25,7 @@ RSpec.describe Api::Assignment::AssignmentController, type: :controller do
       get :show, params: { id: -99 }
       expect(response).to have_http_status(:not_found)
       expect(JSON.parse(response.body)['errors'].length).to eq(1)
-      expect(JSON.parse(response.body)['errors'][0]).to eq({"detail" => "Assignment Not Found.", "title" => "Not Found", "status" => "not_found"})
+      expect(JSON.parse(response.body)['errors'][0]).to eq({ "detail" => "Assignment Not Found.", "title" => "Not Found", "status" => "not_found" })
     end
     it "returns an assignment by id" do
       assignment = create(:assignment, course_schedule: course_schedule)
@@ -54,7 +54,7 @@ RSpec.describe Api::Assignment::AssignmentController, type: :controller do
 
     context "with invalid attributes" do
       it "returns errors for missing parameters" do
-        post :create, params: { }
+        post :create, params: {}
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
@@ -91,7 +91,7 @@ RSpec.describe Api::Assignment::AssignmentController, type: :controller do
       patch :update, params: { id: -99, title: "New Title" }
       expect(response).to have_http_status(:not_found)
       expect(JSON.parse(response.body)['errors'].length).to eq(1)
-      expect(JSON.parse(response.body)['errors'][0]).to eq({"detail" => "Assignment Not Found.", "title" => "Not Found", "status" => "not_found"})
+      expect(JSON.parse(response.body)['errors'][0]).to eq({ "detail" => "Assignment Not Found.", "title" => "Not Found", "status" => "not_found" })
     end
   end
 
@@ -107,7 +107,7 @@ RSpec.describe Api::Assignment::AssignmentController, type: :controller do
       delete :destroy, params: { id: -99 }
       expect(response).to have_http_status(:not_found)
       expect(JSON.parse(response.body)['errors'].length).to eq(1)
-      expect(JSON.parse(response.body)['errors'][0]).to eq({"detail" => "Assignment Not Found.", "title" => "Not Found", "status" => "not_found"})
+      expect(JSON.parse(response.body)['errors'][0]).to eq({ "detail" => "Assignment Not Found.", "title" => "Not Found", "status" => "not_found" })
     end
   end
 end

@@ -15,7 +15,7 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 
 RSpec.configure do |config|
-  config.fixture_paths = [Rails.root.join('spec/fixtures')]
+  config.fixture_paths = [ Rails.root.join('spec/fixtures') ]
 
   # Disable transactional fixtures - we are using Database Cleaner instead
   config.use_transactional_fixtures = false

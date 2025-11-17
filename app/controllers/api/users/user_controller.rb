@@ -6,56 +6,56 @@ module Api
 
         if user_record.save
           render jsonapi: user_record, status: :created
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: user_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: user_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 
       def show
-        user_record = User.find_by(id: show_params['id'])
-        
+        user_record = User.find_by(id: show_params["id"])
+
         render jsonapi: user_record, status: :ok
-        return
+        nil
       end
 
       def index
         render jsonapi: User.all, status: :ok
-        return
+        nil
       end
 
       def update
-        user_record = User.find_by(id: update_params['id'])
+        user_record = User.find_by(id: update_params["id"])
 
         if user_record.blank?
-          render json: {error: [{ title: 'Error', detail: "User Not Found." }] }, status: :not_found
+          render json: { error: [ { title: "Error", detail: "User Not Found." } ] }, status: :not_found
           return
         end
 
         if user_record.update(update_params)
           render jsonapi: user_record, status: :ok
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: user_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: user_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 
       def destroy
-        user_record = User.find_by(id: delete_params['id'])
+        user_record = User.find_by(id: delete_params["id"])
 
         if user_record.blank?
-          render json: {error: [{ title: 'Error', detail: "User Not Found." }] }, status: :not_found
+          render json: { error: [ { title: "Error", detail: "User Not Found." } ] }, status: :not_found
           return
         end
 
         if user_record.destroy
           render json: {}, status: :no_content
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: user_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: user_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 

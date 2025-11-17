@@ -7,7 +7,7 @@ RSpec.describe Api::Assignment::AssignmentGradeLink, type: :model do
       expect(assignment_grade_link).to be_valid
     end
   end
-  
+
   describe "Relationship Validation" do
     # Relationships
     it { should belong_to(:grade_record) }
@@ -34,7 +34,7 @@ RSpec.describe Api::Assignment::AssignmentGradeLink, type: :model do
 
       it do
         should validate_inclusion_of(:status)
-          .in_array(%w(active inactive draft published submitted graded archived))
+          .in_array(%w[active inactive draft published submitted graded archived])
           .with_message("#{Shoulda::Matchers::ExampleClass} is not a valid status")
       end
     end
@@ -43,7 +43,7 @@ RSpec.describe Api::Assignment::AssignmentGradeLink, type: :model do
     context "| 'points' Validator |" do
       it { should_not validate_presence_of(:points) }
       it { should validate_numericality_of(:points) }
-      
+
       let!(:assignment) { create(:assignment) }
       let!(:grade_record) { create(:grade_record) }
       it "is invalid if points is more than the assignment's points_possible" do

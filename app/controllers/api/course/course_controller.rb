@@ -6,63 +6,63 @@ module Api
 
         if course_record.save
           render jsonapi: course_record, status: :created
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: course_schedule_link_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: course_schedule_link_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 
       def show
-        course_record = Course.find_by(id: show_params['id'])
-        
+        course_record = Course.find_by(id: show_params["id"])
+
         render jsonapi: course_record, status: :ok
-        return
+        nil
       end
 
       def index
         render jsonapi: Course.all, status: :ok
-        return
+        nil
       end
 
       def update
-        course_record = Course.find_by(id: update_params['id'])
+        course_record = Course.find_by(id: update_params["id"])
 
         if course_record.blank?
-          render json: {error: [{ title: 'Not Found', detail: "Course with id: #{update_params[:id]} was not found." }] }, status: :not_found
+          render json: { error: [ { title: "Not Found", detail: "Course with id: #{update_params[:id]} was not found." } ] }, status: :not_found
           return
         end
 
         if course_record.update(update_params)
           render jsonapi: course_record, status: :ok
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: course_schedule_link_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: course_schedule_link_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 
       def destroy
-        course_record = Course.find_by(id: delete_params['id'])
+        course_record = Course.find_by(id: delete_params["id"])
 
         if course_record.blank?
-          render json: {error: [{ title: 'Not Found', detail: "Course with id: #{delete_params[:id]} was not found." }] }, status: :not_found
+          render json: { error: [ { title: "Not Found", detail: "Course with id: #{delete_params[:id]} was not found." } ] }, status: :not_found
           return
         end
 
         if course_record.destroy
           render json: {}, status: :no_content
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: course_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: course_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 
       private
 
       def create_params
-        #params.require(:name, :semester, :year, :code)
+        # params.require(:name, :semester, :year, :code)
         params.permit(:name, :semester, :year, :code, :status)
       end
 
@@ -71,7 +71,7 @@ module Api
       end
 
       def update_params
-        #params.require(:id)
+        # params.require(:id)
         params.permit(:id, :name, :semester, :year, :code, :status)
       end
 

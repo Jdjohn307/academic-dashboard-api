@@ -17,13 +17,13 @@ class AddReportingViews < ActiveRecord::Migration[8.0]
         users.grade.final_grade
       FROM users.user
       JOIN users.user_role_link ON users.user_role_link.user_id = users.user.id
-      JOIN users.role ON users.role.id = users.user_role_link.role_id 
+      JOIN users.role ON users.role.id = users.user_role_link.role_id#{' '}
         AND users.role.name ILIKE 'student'
       JOIN users.grade ON users.grade.user_id = users.user.id
       JOIN course.course ON course.course.id = users.grade.course_id
       JOIN course.course_schedule ON course.course_schedule.course_id = course.course.id
       JOIN assignment.assignment ON assignment.assignment.course_schedule_id = course.course_schedule.id
-      LEFT JOIN assignment.assignment_grade_link  ON assignment.assignment_grade_link.assignment_id = assignment.assignment.id 
+      LEFT JOIN assignment.assignment_grade_link  ON assignment.assignment_grade_link.assignment_id = assignment.assignment.id#{' '}
         AND assignment.assignment_grade_link.grade_id = users.grade.id
       WHERE users.user.status ILIKE 'Active'
         AND users.user_role_link.status ILIKE 'Active'
@@ -45,7 +45,7 @@ class AddReportingViews < ActiveRecord::Migration[8.0]
         course.course_schedule.schedule_json
       FROM users.user
       JOIN users.user_role_link ON users.user_role_link.user_id = users.user.id
-      JOIN users.role ON users.role.id = users.user_role_link.role_id 
+      JOIN users.role ON users.role.id = users.user_role_link.role_id#{' '}
         AND users.role.name ILIKE 'student'
       JOIN course.course_schedule_link ON course.course_schedule_link.user_id = users.user.id
       JOIN course.course_schedule ON course.course_schedule.id = course.course_schedule_link.course_schedule_id
@@ -71,7 +71,7 @@ class AddReportingViews < ActiveRecord::Migration[8.0]
         course.course.year
       FROM users.user
       JOIN users.user_role_link ON users.user_role_link.user_id = users.user.id
-      JOIN users.role ON users.role.id = users.user_role_link.role_id 
+      JOIN users.role ON users.role.id = users.user_role_link.role_id#{' '}
         AND users.role.name ILIKE 'instructor'
       JOIN course.course_schedule_link ON course.course_schedule_link.user_id = users.user.id
       JOIN course.course_schedule ON course.course_schedule.id = course.course_schedule_link.course_schedule_id
@@ -95,7 +95,7 @@ class AddReportingViews < ActiveRecord::Migration[8.0]
         student.name AS student_name
       FROM users.user instructor
       JOIN users.user_role_link instructor_role_link ON instructor_role_link.user_id = instructor.id
-      JOIN users.role instructor_role ON instructor_role.id = instructor_role_link.role_id 
+      JOIN users.role instructor_role ON instructor_role.id = instructor_role_link.role_id#{' '}
         AND instructor_role.name = 'instructor'
       JOIN course.course_schedule_link instructor_course_link ON instructor_course_link.user_id = instructor.id
       JOIN course.course_schedule ON course.course_schedule.id = instructor_course_link.course_schedule_id
@@ -103,7 +103,7 @@ class AddReportingViews < ActiveRecord::Migration[8.0]
       JOIN course.course_schedule_link student_course_link ON student_course_link.course_schedule_id = course.course_schedule.id
       JOIN users.user student ON student.id = student_course_link.user_id
       JOIN users.user_role_link student_role_link ON student_role_link.user_id = student.id
-      JOIN users.role student_role ON student_role.id = student_role_link.role_id 
+      JOIN users.role student_role ON student_role.id = student_role_link.role_id#{' '}
         AND student_role.name = 'student'
       WHERE instructor.status ILIKE 'Active'
         AND instructor_role_link.status ILIKE 'Active'
@@ -127,7 +127,7 @@ class AddReportingViews < ActiveRecord::Migration[8.0]
         assignment.assignment.due_date
       FROM users.user
       JOIN users.user_role_link ON users.user_role_link.user_id = users.user.id
-      JOIN users.role ON users.role.id = users.user_role_link.role_id 
+      JOIN users.role ON users.role.id = users.user_role_link.role_id#{' '}
         AND users.role.name = 'instructor'
       JOIN course.course_schedule_link ON course.course_schedule_link.user_id = users.user.id
       JOIN course.course_schedule ON course.course_schedule.id = course.course_schedule_link.course_schedule_id
@@ -137,7 +137,7 @@ class AddReportingViews < ActiveRecord::Migration[8.0]
        WHERE users.user.status ILIKE 'Active'
         AND users.user_role_link.status ILIKE 'Active'
         AND course.course.status ILIKE 'Active'
-        AND course.course_schedule.status ILIKE 'Active' 
+        AND course.course_schedule.status ILIKE 'Active'#{' '}
         AND assignment.assignment_grade_link.id IS NULL
       ;
     SQL

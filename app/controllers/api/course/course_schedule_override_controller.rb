@@ -6,56 +6,56 @@ module Api
 
         if course_schedule_override_record.save
           render jsonapi: course_schedule_override_record, status: :created
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: course_schedule_override_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: course_schedule_override_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 
       def show
-        course_schedule_override_record = CourseScheduleOverride.find_by(id: show_params['id'])
-        
+        course_schedule_override_record = CourseScheduleOverride.find_by(id: show_params["id"])
+
         render jsonapi: course_schedule_override_record, status: :ok
-        return
+        nil
       end
 
       def index
         render jsonapi: CourseScheduleOverride.all, status: :ok
-        return
+        nil
       end
 
       def update
-        course_schedule_override_record = CourseScheduleOverride.find_by(id: update_params['id'])
+        course_schedule_override_record = CourseScheduleOverride.find_by(id: update_params["id"])
 
         if course_schedule_override_record.blank?
-          render json: {error: [{ title: 'Error', detail: "Course Schedule Override Not Found." }] }, status: :not_found
+          render json: { error: [ { title: "Error", detail: "Course Schedule Override Not Found." } ] }, status: :not_found
           return
         end
 
         if course_schedule_override_record.update(update_params)
           render jsonapi: course_schedule_override_record, status: :ok
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: course_schedule_override_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: course_schedule_override_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 
       def destroy
-        course_schedule_override_record = CourseScheduleOverride.find_by(id: delete_params['id'])
+        course_schedule_override_record = CourseScheduleOverride.find_by(id: delete_params["id"])
 
         if course_schedule_override_record.blank?
-          render json: {error: [{ title: 'Error', detail: "Course Schedule Override Not Found." }] }, status: :not_found
+          render json: { error: [ { title: "Error", detail: "Course Schedule Override Not Found." } ] }, status: :not_found
           return
         end
 
         if course_schedule_override_record.destroy
           render json: {}, status: :no_content
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: course_schedule_override_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: course_schedule_override_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 

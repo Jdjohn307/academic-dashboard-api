@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Api::Course::CourseScheduleController, type: :controller do
   let!(:course) { create(:course) }
-  
+
   describe "GET #index" do
     it "returns all course schedules" do
       create_list(:course_schedule, 3, course: course)

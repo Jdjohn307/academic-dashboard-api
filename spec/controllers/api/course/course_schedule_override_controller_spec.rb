@@ -27,7 +27,7 @@ RSpec.describe Api::Course::CourseScheduleOverrideController, type: :controller 
   describe "POST #create" do
     context "with valid attributes" do
       it "creates an override" do
-        valid_params = { course_schedule_id: course_schedule.id, override_date: Time.now, schedule_json: { friday: ["16:00", "18:00"] } }
+        valid_params = { course_schedule_id: course_schedule.id, override_date: Time.now, schedule_json: { friday: [ "16:00", "18:00" ] } }
         post :create, params: valid_params
 
         expect(response).to have_http_status(:created)

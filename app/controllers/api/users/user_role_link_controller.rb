@@ -6,56 +6,56 @@ module Api
 
         if user_role_link_record.save
           render jsonapi: user_role_link_record, status: :created
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: user_role_link_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: user_role_link_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 
       def show
-        user_role_link_record = UserRoleLink.find_by(id: show_params['id'])
-        
+        user_role_link_record = UserRoleLink.find_by(id: show_params["id"])
+
         render jsonapi: user_role_link_record, status: :ok
-        return
+        nil
       end
 
       def index
         render jsonapi: UserRoleLink.all, status: :ok
-        return
+        nil
       end
 
       def update
-        user_role_link_record = UserRoleLink.find_by(id: update_params['id'])
+        user_role_link_record = UserRoleLink.find_by(id: update_params["id"])
 
         if user_role_link_record.blank?
-          render json: {error: [{ title: 'Error', detail: "User Role Link Not Found." }] }, status: :not_found
+          render json: { error: [ { title: "Error", detail: "User Role Link Not Found." } ] }, status: :not_found
           return
         end
 
         if user_role_link_record.update(update_params)
           render jsonapi: user_role_link_record, status: :ok
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: user_role_link_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: user_role_link_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 
       def destroy
-        user_role_link_record = UserRoleLink.find_by(id: delete_params['id'])
+        user_role_link_record = UserRoleLink.find_by(id: delete_params["id"])
 
         if user_role_link_record.blank?
-          render json: {error: [{ title: 'Error', detail: "User Role Link Not Found." }] }, status: :not_found
+          render json: { error: [ { title: "Error", detail: "User Role Link Not Found." } ] }, status: :not_found
           return
         end
 
         if user_role_link_record.destroy
           render json: {}, status: :no_content
-          return
+          nil
         else
-          render json: {error: [{ title: 'Error', detail: user_role_link_record.errors }] }, status: :unprocessable_entity
-          return
+          render json: { error: [ { title: "Error", detail: user_role_link_record.errors } ] }, status: :unprocessable_entity
+          nil
         end
       end
 
