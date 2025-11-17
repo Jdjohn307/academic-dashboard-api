@@ -87,4 +87,4 @@ yarn-debug.log*
 /config/master.key
 .kamal/secretsapp/notes.rb
 .kamal/secrets
-app/notes.rb
+app/notes.txt
