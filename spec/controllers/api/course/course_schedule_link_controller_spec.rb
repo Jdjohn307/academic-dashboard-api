@@ -28,7 +28,7 @@ RSpec.describe Api::Course::CourseScheduleLinkController, type: :controller do
   describe "POST #create" do
     context "with valid attributes" do
       it "creates a new course schedule link" do
-        valid_params = { user_id: user.id, course_schedule_id: course_schedule.id }
+        valid_params = attributes_for(:course_schedule_link).merge(course_schedule_id: course_schedule.id, user_id: user.id)
         post :create, params: valid_params
 
         expect(response).to have_http_status(:created)
