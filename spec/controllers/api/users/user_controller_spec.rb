@@ -23,7 +23,7 @@ RSpec.describe Api::Users::UserController, type: :controller do
 
   describe "POST #create" do
     it "creates a new user" do
-      valid_params = { name: 'Name', email: 'test@example.com', encrypted_password: 'super_secure123', created_at: Time.now, updated_at: Time.now }
+      valid_params = attributes_for(:user)
       post :create, params: valid_params
 
       expect(response).to have_http_status(:created)

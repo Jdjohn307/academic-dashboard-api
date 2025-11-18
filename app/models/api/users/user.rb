@@ -3,6 +3,16 @@ module Api
     class User < ApplicationRecord
       self.table_name = "user"
 
+      # Validation
+      validates :name, presence: true, length: { maximum: 100 }
+      validates :email, presence: true, length: { maximum: 255 }
+      validates :encrypted_password, presence: true
+      validates :status, inclusion: {
+        in: [ "active", "inactive", "archived" ],
+        message: "%{value} is not a valid status"
+      }
+
+      # Relationships
       has_many :user_role_links, class_name: "Api::Users::UserRoleLink", foreign_key: "user_id", inverse_of: :user
       has_many :grades, class_name: "Api::Users::Grade", foreign_key: "user_id", inverse_of: :user
       has_many :course_schedule_links, class_name: "Api::Course::CourseScheduleLink", foreign_key: "user_id", inverse_of: :user
