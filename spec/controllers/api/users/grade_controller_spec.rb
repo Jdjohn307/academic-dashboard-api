@@ -27,13 +27,7 @@ RSpec.describe Api::Users::GradeController, type: :controller do
   describe "POST #create" do
     context "with valid attributes" do
       it "creates a grade" do
-        valid_params = {
-          user_id: user.id,
-          course_id: course.id,
-          final_grade: 95.0,
-          comments: "Excellent work",
-          status: "posted"
-        }
+        valid_params = attributes_for(:grade_record).merge(user_id: user.id, course_id: course.id)
         post :create, params: valid_params
 
         expect(response).to have_http_status(:created)
