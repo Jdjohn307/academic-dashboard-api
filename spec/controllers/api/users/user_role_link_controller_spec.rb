@@ -27,7 +27,7 @@ RSpec.describe Api::Users::UserRoleLinkController, type: :controller do
   describe "POST #create" do
     context "with valid attributes" do
       it "creates a user-role link" do
-        valid_params = { user_id: user.id, role_id: role.id }
+        valid_params = attributes_for(:user_role_link).merge(user_id: user.id, role_id: role.id)
         post :create, params: valid_params
 
         expect(response).to have_http_status(:created)
