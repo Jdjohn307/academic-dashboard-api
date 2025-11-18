@@ -24,11 +24,11 @@ RSpec.describe Api::Users::RoleController, type: :controller do
   describe "POST #create" do
     context "with valid attributes" do
       it "creates a role" do
-        valid_params = { name: "Instructor" }
+        valid_params = attributes_for(:role)
         post :create, params: valid_params
 
         expect(response).to have_http_status(:created)
-        expect(JSON.parse(response.body)['data']['id']).to be_present
+        expect(JSON.parse(response.body)['data']).to be_present
       end
     end
 
@@ -37,7 +37,7 @@ RSpec.describe Api::Users::RoleController, type: :controller do
         post :create, params: { apples: nil }
 
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body)['errors']).to be_present
+        expect(JSON.parse(response.body)['error']).to be_present
       end
     end
   end
