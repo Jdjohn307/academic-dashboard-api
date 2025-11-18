@@ -17,6 +17,7 @@ RSpec.describe Api::Assignment::Assignment, type: :model do
   describe "Validator Validation" do
     # Validation
     it { should validate_presence_of(:course_schedule_id) }
+    it { should validate_numericality_of(:course_schedule_id) }
 
     it { should validate_presence_of(:title) }
     it { should validate_length_of(:title) }

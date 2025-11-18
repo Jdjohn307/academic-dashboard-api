@@ -2,7 +2,9 @@ module Api
   module Assignment
     class Assignment < ApplicationRecord
       self.table_name = "assignment"
-      validates :course_schedule_id, presence: true
+      validates :course_schedule_id, presence: true, numericality: {
+        greater_than_or_equal_to: 0, only_integer: true
+      }
       validates :due_date,
         presence: true,
         comparison: {

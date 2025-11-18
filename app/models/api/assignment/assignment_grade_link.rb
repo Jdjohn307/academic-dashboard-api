@@ -3,8 +3,12 @@ module Api
     class AssignmentGradeLink < ApplicationRecord
       self.table_name = "assignment_grade_link"
 
-      validates :grade_id, presence: true, numericality: { greater_than_or_equal_to: 0 }
-      validates :assignment_id, presence: true, numericality: { greater_than_or_equal_to: 0 }
+      validates :grade_id, presence: true, numericality: {
+        greater_than_or_equal_to: 0, only_integer: true
+      }
+      validates :assignment_id, presence: true, numericality: {
+        greater_than_or_equal_to: 0, only_integer: true
+      }
 
       validates :points, numericality: { greater_than_or_equal_to: 0, allow_nil: true }, comparison: {
         less_than_or_equal_to: ->(assignment_grade_link) { assignment_grade_link.assignment&.points_possible },
