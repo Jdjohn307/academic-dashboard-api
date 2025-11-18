@@ -16,7 +16,7 @@ RSpec.describe Api::Users::Grade, type: :model do
 
   describe "Validator Validation" do
     it { should validate_presence_of(:user_id) }
-    it { should validate_numericality_of(:user_id) 
+    it { should validate_numericality_of(:user_id)
   }
     it { should validate_presence_of(:course_id) }
     it { should validate_numericality_of(:course_id) }
@@ -24,7 +24,7 @@ RSpec.describe Api::Users::Grade, type: :model do
     it { should validate_numericality_of(:final_grade) }
 
     it { should validate_length_of(:comments) }
-    
+
     context "| 'status' Validator |" do
       let!(:user) { create(:user) }
       let!(:course) { create(:course) }

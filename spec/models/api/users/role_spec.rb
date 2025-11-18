@@ -15,7 +15,7 @@ RSpec.describe Api::Users::Role, type: :model do
   describe "Validator Validation" do
     it { should validate_presence_of(:name) }
     it { should validate_length_of(:name) }
-    
+
     context "| 'status' Validator |" do
       subject { build(:role) }
       it do

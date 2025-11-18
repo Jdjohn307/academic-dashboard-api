@@ -19,7 +19,7 @@ RSpec.describe Api::Users::UserRoleLink, type: :model do
 
     it { should validate_presence_of(:role_id) }
     it { should validate_numericality_of(:role_id) }
-    
+
     context "| 'status' Validator |" do
       let!(:user) { create(:user) }
       let!(:role) { create(:role) }
