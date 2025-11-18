@@ -48,7 +48,7 @@ RSpec.describe Api::Assignment::Assignment, type: :model do
       let!(:course) { create(:course) }
       let!(:course_schedule) { create(:course_schedule, course: course) }
       it "is invalid if due_date is after the course_schedule end_date" do
-        assignment = build(:assignment_invalid_due_date, course_schedule: course_schedule)
+        assignment = build(:assignment, :assignment_invalid_due_date, course_schedule: course_schedule)
         expect(assignment).not_to be_valid
         expect(assignment.errors[:due_date]).to include("must be less than or equal to #{course_schedule.end_date}")
       end

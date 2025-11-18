@@ -59,7 +59,7 @@ RSpec.describe Api::Assignment::AssignmentController, type: :controller do
       end
 
       it "returns errors for invalid parameters" do
-        invalid_params = attributes_for(:assignment_invalid_points).merge(course_schedule_id: course_schedule.id)
+        invalid_params = attributes_for(:assignment, :assignment_invalid_points).merge(course_schedule_id: course_schedule.id)
         post :create, params: invalid_params
         expect(response).to have_http_status(:unprocessable_entity)
         expect(JSON.parse(response.body)['errors'].length).to eq(1)
@@ -67,7 +67,7 @@ RSpec.describe Api::Assignment::AssignmentController, type: :controller do
       end
 
       it "returns errors for invalid parameters with complex validation" do
-        invalid_params = attributes_for(:assignment_invalid_due_date).merge(course_schedule_id: course_schedule.id)
+        invalid_params = attributes_for(:assignment, :assignment_invalid_due_date).merge(course_schedule_id: course_schedule.id)
         post :create, params: invalid_params
         expect(response).to have_http_status(:unprocessable_entity)
         expect(JSON.parse(response.body)['errors'].length).to eq(1)

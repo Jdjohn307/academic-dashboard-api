@@ -57,31 +57,31 @@ RSpec.describe Api::Course::CourseSchedule, type: :model do
       end
 
       it "adds an error if schedule_json is not a hash or JSON object" do
-        course_schedule = build(:course_schedule_invalid_json, course: course)
+        course_schedule = build(:course_schedule, :course_schedule_invalid_json_string, course: course)
         course_schedule.valid?
         expect(course_schedule.errors[:schedule_json]).to include("must be a valid JSON object")
       end
 
       it "adds an error if a day is invalid" do
-        course_schedule = build(:course_schedule_invalid_json_day, course: course)
+        course_schedule = build(:course_schedule, :course_schedule_invalid_day, course: course)
         course_schedule.valid?
         expect(course_schedule.errors[:schedule_json]).to include(/contains invalid day:/)
       end
 
       it "adds an error if the value for a day is not an array" do
-        course_schedule = build(:course_schedule_invalid_json_no_array, course: course)
+        course_schedule = build(:course_schedule, :course_schedule_invalid_no_array, course: course)
         course_schedule.valid?
         expect(course_schedule.errors[:schedule_json]).to include(/must be an array of time periods/)
       end
 
       it "adds an error if a period is not a hash or missing keys" do
-        course_schedule = build(:course_schedule_invalid_json_time_key, course: course)
+        course_schedule = build(:course_schedule, :course_schedule_invalid_time_key, course: course)
         course_schedule.valid?
         expect(course_schedule.errors[:schedule_json]).to include(/must be a hash with 'start' and 'end' keys/)
       end
 
       it "adds an error if a time is not in HH:MM format" do
-        course_schedule = build(:course_schedule_invalid_json_time_value, course: course)
+        course_schedule = build(:course_schedule, :course_schedule_invalid_time_value, course: course)
         course_schedule.valid?
         expect(course_schedule.errors[:schedule_json].join).to match(/must be a string in HH:MM format/)
       end

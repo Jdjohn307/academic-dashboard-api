@@ -47,7 +47,7 @@ RSpec.describe Api::Assignment::AssignmentGradeLink, type: :model do
       let!(:assignment) { create(:assignment) }
       let!(:grade_record) { create(:grade_record) }
       it "is invalid if points is more than the assignment's points_possible" do
-        assignment_grade_link = build(:assignment_grade_link_invalid_points, assignment: assignment, grade_record: grade_record)
+        assignment_grade_link = build(:assignment_grade_link, :assignment_grade_link_invalid_points, assignment: assignment, grade_record: grade_record)
         expect(assignment_grade_link).not_to be_valid
         expect(assignment_grade_link.errors[:points]).to include("must be less than or equal to #{assignment.points_possible}")
       end
