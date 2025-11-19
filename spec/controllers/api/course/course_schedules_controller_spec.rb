@@ -1,10 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe Api::Users::RolesController, type: :controller do
+RSpec.describe Api::Course::CourseSchedulesController, type: :controller do
+  let!(:course) { create(:course) }
+
   # Index
   describe "GET #index" do
-    it "returns all roles" do
-      create_list(:role, 3)
+    it "returns all course schedules" do
+      create_list(:course_schedule, 3, course: course)
       get :index
       expect(response).to have_http_status(:ok)
       expect(JSON.parse(response.body)['data'].length).to eq(3)
@@ -26,23 +28,23 @@ RSpec.describe Api::Users::RolesController, type: :controller do
       expect(error['status']).to eq('404')
       expect(error['detail']).to match(/couldn't find/i)
     end
-    it "returns a role by id" do
-      role = create(:role)
-      get :show, params: { id: role.id }
+    it "returns a course schedule by id" do
+      schedule = create(:course_schedule, course: course)
+      get :show, params: { id: schedule.id }
       expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body)['data']['id']).to eq("#{role.id}")
-      expect(JSON.parse(response.body)['data']['attributes'].keys).to include('name', 'status')
+      expect(JSON.parse(response.body)['data']['id']).to eq("#{schedule.id}")
+      expect(JSON.parse(response.body)['data']['attributes'].keys).to include('name', 'course_id', 'start_date', 'end_date', 'schedule_json', 'status')
     end
   end
 
   # Create
   describe "POST #create" do
     context "with valid attributes" do
-      it "creates a role" do
-        valid_params = attributes_for(:role)
+      it "creates a new course schedule" do
+        valid_params = attributes_for(:course_schedule).merge(course_id: course.id)
         post :create, params: valid_params
         expect(response).to have_http_status(:created)
-        expect(JSON.parse(response.body)['data']['attributes'].keys).to include('name', 'status')
+        expect(JSON.parse(response.body)['data']['attributes'].keys).to include('name', 'course_id', 'start_date', 'end_date', 'schedule_json', 'status')
       end
     end
     context "with invalid attributes" do
@@ -61,14 +63,14 @@ RSpec.describe Api::Users::RolesController, type: :controller do
 
   # Update
   describe "PATCH #update" do
-    let!(:role) { create(:role, name: "Teacher") }
-    it "updates a role" do
-      patch :update, params: { id: role.id, name: "Admin" }
+    let!(:schedule) { create(:course_schedule, course: course, name: "Old Name") }
+    it "updates a course schedule" do
+      patch :update, params: { id: schedule.id, name: "New Name" }
       expect(response).to have_http_status(:ok)
-      expect(role.reload.name).to eq("Admin")
+      expect(schedule.reload.name).to eq("New Name")
     end
     it "renders error when not found" do
-      patch :update, params: { id: -99, name: "Admin" }
+      patch :update, params: { id: -99, name: "New Name" }
       expect(response).to have_http_status(:not_found)
       error = JSON.parse(response.body)['errors'][0]
       expect(error['title']).to eq('Not Found')
@@ -76,7 +78,7 @@ RSpec.describe Api::Users::RolesController, type: :controller do
       expect(error['detail']).to match(/couldn't find/i)
     end
     it "returns errors for invalid parameters" do
-      patch :update, params: { id: role.id, name: nil }
+      patch :update, params: { id: schedule.id, name: nil }
       expect(response).to have_http_status(:unprocessable_entity)
       expect(JSON.parse(response.body)['errors']).to be_present
     end
@@ -84,11 +86,11 @@ RSpec.describe Api::Users::RolesController, type: :controller do
 
   # Destroy
   describe "DELETE #destroy" do
-    let!(:role) { create(:role) }
-    it "deletes a role" do
-      delete :destroy, params: { id: role.id }
+    let!(:schedule) { create(:course_schedule, course: course) }
+    it "deletes a course schedule" do
+      delete :destroy, params: { id: schedule.id }
       expect(response).to have_http_status(:no_content)
-      expect(Api::Users::Role.exists?(role.id)).to be_falsey
+      expect(Api::Course::CourseSchedule.exists?(schedule.id)).to be_falsey
     end
     it "renders error when not found" do
       delete :destroy, params: { id: -99 }

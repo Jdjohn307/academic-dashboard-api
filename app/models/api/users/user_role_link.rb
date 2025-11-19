@@ -13,6 +13,10 @@ module Api
 
       belongs_to :user, class_name: "Api::Users::User", foreign_key: "user_id", required: true, inverse_of: :user_role_links
       belongs_to :role, class_name: "Api::Users::Role", foreign_key: "role_id", required: true, inverse_of: :user_role_links
+
+      # Validation for presence of associated records
+      validates :user, presence: true
+      validates :role, presence: true
     end
   end
 end

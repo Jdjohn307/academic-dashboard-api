@@ -22,6 +22,9 @@ module Api
 
       belongs_to :course_schedule, class_name: "Api::Course::CourseSchedule", foreign_key: "course_schedule_id", inverse_of: :course_schedule_overrides
 
+      # Validation for presence of associated records
+      validates :course_schedule, presence: true
+
       private
       def schedule_json_is_valid
         parsed = schedule_json || {}

@@ -1,13 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe Api::Users::UserRoleLinksController, type: :controller do
-  let!(:user) { create(:user) }
-  let!(:role) { create(:role) }
-
+RSpec.describe Api::Course::CoursesController, type: :controller do
   # Index
   describe "GET #index" do
-    it "returns all user-role links" do
-      create_list(:user_role_link, 3, user: user, role: role)
+    it "returns all courses" do
+      create_list(:course, 3)
       get :index
       expect(response).to have_http_status(:ok)
       expect(JSON.parse(response.body)['data'].length).to eq(3)
@@ -29,23 +26,23 @@ RSpec.describe Api::Users::UserRoleLinksController, type: :controller do
       expect(error['status']).to eq('404')
       expect(error['detail']).to match(/couldn't find/i)
     end
-    it "returns a user-role link by id" do
-      link = create(:user_role_link, user: user, role: role)
-      get :show, params: { id: link.id }
+    it "returns a course by id" do
+      course = create(:course)
+      get :show, params: { id: course.id }
       expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body)['data']['id']).to eq("#{link.id}")
-      expect(JSON.parse(response.body)['data']['attributes'].keys).to include('user_id', 'role_id', 'status')
+      expect(JSON.parse(response.body)['data']['id']).to eq("#{course.id}")
+      expect(JSON.parse(response.body)['data']['attributes'].keys).to include('name', 'semester', 'year', 'code', 'status')
     end
   end
 
   # Create
   describe "POST #create" do
     context "with valid attributes" do
-      it "creates a user-role link" do
-        valid_params = attributes_for(:user_role_link).merge(user_id: user.id, role_id: role.id)
+      it "creates a new course" do
+        valid_params = attributes_for(:course)
         post :create, params: valid_params
         expect(response).to have_http_status(:created)
-        expect(JSON.parse(response.body)['data']['attributes'].keys).to include('user_id', 'role_id', 'status')
+        expect(JSON.parse(response.body)['data']['attributes'].keys).to include('name', 'semester', 'year', 'code', 'status')
       end
     end
     context "with invalid attributes" do
@@ -55,7 +52,7 @@ RSpec.describe Api::Users::UserRoleLinksController, type: :controller do
         expect(JSON.parse(response.body)['errors']).to be_present
       end
       it "returns errors for invalid parameters" do
-        post :create, params: { user_id: nil }
+        post :create, params: { name: nil }
         expect(response).to have_http_status(:unprocessable_entity)
         expect(JSON.parse(response.body)['errors']).to be_present
       end
@@ -64,15 +61,14 @@ RSpec.describe Api::Users::UserRoleLinksController, type: :controller do
 
   # Update
   describe "PATCH #update" do
-    let!(:link) { create(:user_role_link, user: user, role: role) }
-    it "updates a user-role link" do
-      new_role = create(:role)
-      patch :update, params: { id: link.id, role_id: new_role.id }
+    let!(:course) { create(:course, name: "Old Name") }
+    it "updates a course" do
+      patch :update, params: { id: course.id, name: "New Name" }
       expect(response).to have_http_status(:ok)
-      expect(link.reload.role_id).to eq(new_role.id)
+      expect(course.reload.name).to eq("New Name")
     end
     it "renders error when not found" do
-      patch :update, params: { id: -99, role_id: role.id }
+      patch :update, params: { id: -99, name: "New Name" }
       expect(response).to have_http_status(:not_found)
       error = JSON.parse(response.body)['errors'][0]
       expect(error['title']).to eq('Not Found')
@@ -80,7 +76,7 @@ RSpec.describe Api::Users::UserRoleLinksController, type: :controller do
       expect(error['detail']).to match(/couldn't find/i)
     end
     it "returns errors for invalid parameters" do
-      patch :update, params: { id: link.id, user_id: nil }
+      patch :update, params: { id: course.id, name: nil }
       expect(response).to have_http_status(:unprocessable_entity)
       expect(JSON.parse(response.body)['errors']).to be_present
     end
@@ -88,11 +84,11 @@ RSpec.describe Api::Users::UserRoleLinksController, type: :controller do
 
   # Destroy
   describe "DELETE #destroy" do
-    let!(:link) { create(:user_role_link, user: user, role: role) }
-    it "deletes a user-role link" do
-      delete :destroy, params: { id: link.id }
+    let!(:course) { create(:course) }
+    it "deletes a course" do
+      delete :destroy, params: { id: course.id }
       expect(response).to have_http_status(:no_content)
-      expect(Api::Users::UserRoleLink.exists?(link.id)).to be_falsey
+      expect(Api::Course::Course.exists?(course.id)).to be_falsey
     end
     it "renders error when not found" do
       delete :destroy, params: { id: -99 }

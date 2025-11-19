@@ -13,22 +13,22 @@ Rails.application.routes.draw do
   # root "posts#index"
   namespace :api do
       namespace :assignment do
-      resources :assignment
-      resources :assignment_grade_link
+        resources :assignments
+        resources :assignment_grade_links
       end
 
       namespace :course do
-      resources :course
-      resources :course_schedule
-      resources :course_schedule_link
-      resources :course_schedule_override
+        resources :courses
+        resources :course_schedules
+        resources :course_schedule_links
+        resources :course_schedule_overrides
       end
 
       namespace :users do
-      resources :grade
-      resources :role
-      resources :user
-      resources :user_role_link
+        resources :grades
+        resources :roles
+        resources :users
+        resources :user_role_links
       end
 
       resources :test_table

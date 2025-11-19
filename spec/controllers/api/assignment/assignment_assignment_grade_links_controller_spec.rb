@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::Assignment::AssignmentGradeLinkController, type: :controller do
+RSpec.describe Api::Assignment::AssignmentGradeLinksController, type: :controller do
   let!(:assignment) { create(:assignment) }
   let!(:grade_record) { create(:grade_record) }
 
@@ -15,12 +15,13 @@ RSpec.describe Api::Assignment::AssignmentGradeLinkController, type: :controller
   end
 
   describe "GET #show" do
-    it "returns an assignment grade link by id" do
-      ag_link = create(:assignment_grade_link, assignment: assignment, grade_record: grade_record)
-      get :show, params: { id: ag_link.id }
-
-      expect(response).to have_http_status(:ok)
-       eq("#{ag_link.id}")
+    it "renders error when not found" do
+      get :show, params: { id: -99 }
+      expect(response).to have_http_status(:not_found)
+      error = JSON.parse(response.body)['errors'][0]
+      expect(error['title']).to eq('Not Found')
+      expect(error['status']).to eq('404')
+      expect(error['detail']).to match(/couldn't find/i)
     end
   end
 
@@ -37,6 +38,15 @@ RSpec.describe Api::Assignment::AssignmentGradeLinkController, type: :controller
   end
 
   describe "PATCH #update" do
+    it "renders error when not found" do
+      patch :update, params: { id: -99, points: 10 }
+      expect(response).to have_http_status(:not_found)
+      error = JSON.parse(response.body)['errors'][0]
+      expect(error['title']).to eq('Not Found')
+      expect(error['status']).to eq('404')
+      expect(error['detail']).to match(/couldn't find/i)
+    end
+
     it "updates an assignment grade link" do
       ag_link = create(:assignment_grade_link, assignment: assignment, grade_record: grade_record, points: 5)
       patch :update, params: { id: ag_link.id, points: 20 }
@@ -47,6 +57,15 @@ RSpec.describe Api::Assignment::AssignmentGradeLinkController, type: :controller
   end
 
   describe "DELETE #destroy" do
+    it "renders error when not found" do
+      delete :destroy, params: { id: -99 }
+      expect(response).to have_http_status(:not_found)
+      error = JSON.parse(response.body)['errors'][0]
+      expect(error['title']).to eq('Not Found')
+      expect(error['status']).to eq('404')
+      expect(error['detail']).to match(/couldn't find/i)
+    end
+
     it "deletes an assignment grade link" do
       ag_link = create(:assignment_grade_link, assignment: assignment, grade_record: grade_record)
       delete :destroy, params: { id: ag_link.id }

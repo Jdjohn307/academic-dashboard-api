@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::Assignment::AssignmentController, type: :controller do
+RSpec.describe Api::Assignment::AssignmentsController, type: :controller do
   let!(:course) { create(:course) }
   let!(:course_schedule) { create(:course_schedule, course: course) }
 
@@ -24,8 +24,10 @@ RSpec.describe Api::Assignment::AssignmentController, type: :controller do
     it "renders error when not found" do
       get :show, params: { id: -99 }
       expect(response).to have_http_status(:not_found)
-      expect(JSON.parse(response.body)['errors'].length).to eq(1)
-      expect(JSON.parse(response.body)['errors'][0]).to eq({ "detail" => "Assignment Not Found.", "title" => "Not Found", "status" => "not_found" })
+      error = JSON.parse(response.body)['errors'][0]
+      expect(error['title']).to eq('Not Found')
+      expect(error['status']).to eq('404')
+      expect(error['detail']).to match(/couldn't find/i)
     end
     it "returns an assignment by id" do
       assignment = create(:assignment, course_schedule: course_schedule)
@@ -63,7 +65,7 @@ RSpec.describe Api::Assignment::AssignmentController, type: :controller do
         post :create, params: invalid_params
         expect(response).to have_http_status(:unprocessable_entity)
         expect(JSON.parse(response.body)['errors'].length).to eq(1)
-        expect(JSON.parse(response.body)['errors'][0]['detail']['points_possible'][0]).to eq('is not a number')
+        expect(JSON.parse(response.body)['errors'][0]['detail']).to eq('Points possible is not a number')
       end
 
       it "returns errors for invalid parameters with complex validation" do
@@ -71,7 +73,7 @@ RSpec.describe Api::Assignment::AssignmentController, type: :controller do
         post :create, params: invalid_params
         expect(response).to have_http_status(:unprocessable_entity)
         expect(JSON.parse(response.body)['errors'].length).to eq(1)
-        expect(JSON.parse(response.body)['errors'][0]['detail']['due_date'][0]).to include('must be less than or equal to')
+        expect(JSON.parse(response.body)['errors'][0]['detail']).to include('Due date must be less than or equal to')
       end
     end
   end
@@ -90,8 +92,10 @@ RSpec.describe Api::Assignment::AssignmentController, type: :controller do
     it "renders error when not found" do
       patch :update, params: { id: -99, title: "New Title" }
       expect(response).to have_http_status(:not_found)
-      expect(JSON.parse(response.body)['errors'].length).to eq(1)
-      expect(JSON.parse(response.body)['errors'][0]).to eq({ "detail" => "Assignment Not Found.", "title" => "Not Found", "status" => "not_found" })
+      error = JSON.parse(response.body)['errors'][0]
+      expect(error['title']).to eq('Not Found')
+      expect(error['status']).to eq('404')
+      expect(error['detail']).to match(/couldn't find/i)
     end
   end
 
@@ -106,8 +110,10 @@ RSpec.describe Api::Assignment::AssignmentController, type: :controller do
     it "renders error when not found" do
       delete :destroy, params: { id: -99 }
       expect(response).to have_http_status(:not_found)
-      expect(JSON.parse(response.body)['errors'].length).to eq(1)
-      expect(JSON.parse(response.body)['errors'][0]).to eq({ "detail" => "Assignment Not Found.", "title" => "Not Found", "status" => "not_found" })
+      error = JSON.parse(response.body)['errors'][0]
+      expect(error['title']).to eq('Not Found')
+      expect(error['status']).to eq('404')
+      expect(error['detail']).to match(/couldn't find/i)
     end
   end
 end

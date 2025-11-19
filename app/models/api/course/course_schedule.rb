@@ -26,6 +26,9 @@ module Api
       has_many :course_schedule_links, class_name: "Api::Course::CourseScheduleLink", foreign_key: "course_schedule_id", inverse_of: :course_schedule
       has_many :assignments, class_name: "Api::Assignment::Assignment", foreign_key: "course_schedule_id", inverse_of: :course_schedule
 
+      # Validation for presence of associated records
+      validates :course, presence: true
+
       private
 
 

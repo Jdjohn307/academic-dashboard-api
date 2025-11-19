@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::Course::CourseScheduleController, type: :controller do
+RSpec.describe Api::Course::CourseSchedulesController, type: :controller do
   let!(:course) { create(:course) }
 
   describe "GET #index" do

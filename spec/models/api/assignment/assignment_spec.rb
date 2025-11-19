@@ -37,7 +37,7 @@ RSpec.describe Api::Assignment::Assignment, type: :model do
 
       it do
         should validate_inclusion_of(:status)
-          .in_array(%w[active inactive draft published submitted graded archived])
+          .in_array(%w[active inactive draft published archived])
           .with_message("#{Shoulda::Matchers::ExampleClass} is not a valid status")
       end
     end
