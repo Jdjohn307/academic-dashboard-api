@@ -1,12 +1,49 @@
 module Api
   class BaseController < ActionController::Base
+    include Pagy::Method
     protect_from_forgery with: :null_session
+
+    before_action :permit_options, only: [ :index ]
 
     rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
     rescue_from ActiveRecord::RecordNotSaved, with: :record_not_saved
     rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity
 
+    # Pagy pagination helper
+    def paginate(results, options = {})
+      pagy, records = if results.is_a? Array
+        pagy_array(results, **options)
+      else
+        pagy(results, **options)
+      end
+
+      [ records, pagy ]
+    end
+
+    def render_paginated(records, option_params = {})
+      options = (option_params || {}).to_h.symbolize_keys
+      paginated_records, pagy = paginate(records, options)
+
+      render json: {
+        data: paginated_records,
+        meta: {
+          last: pagy.last,
+          page: pagy.page,
+          count: pagy.count,
+          next: pagy.next,
+          from: pagy.from,
+          to: pagy.to
+        }
+      }, status: :ok
+    end
+
+
     private
+
+    # Before actions
+    def permit_options
+      params.permit(options: [ :page, :limit ])
+    end
 
     def render_not_found(exception)
       model_name = exception.model rescue nil

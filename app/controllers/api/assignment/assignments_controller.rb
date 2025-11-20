@@ -5,7 +5,7 @@ module Api
 
       # GET /api/assignment/assignments
       def index
-        render jsonapi: Assignment.all, status: :ok
+        render_paginated(Assignment.all, permit_options[:options] || {})
       end
 
       # GET /api/assignment/assignments/:id

@@ -5,12 +5,36 @@ RSpec.describe Api::Assignment::AssignmentsController, type: :controller do
   let!(:course_schedule) { create(:course_schedule, course: course) }
 
   describe "GET #index" do
-    it "returns all assignments" do
-      create_list(:assignment, 3, course_schedule: course_schedule)
-      get :index
+    context "with records" do
+      before do
+        create_list(:assignment, 40, course_schedule: course_schedule)
+      end
 
-      expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body)['data'].length).to eq(3)
+      it "returns paginated assignments with default pagination" do
+        get :index
+
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)["data"].length).to eq(25) # Default items per page is 25
+        expect(JSON.parse(response.body)["meta"]["page"]).to eq(1) # Default page is 1
+        expect(JSON.parse(response.body)["meta"]["count"]).to eq(40) # Total records
+        expect(JSON.parse(response.body)["meta"]["next"]).to eq(2) # Next page
+        expect(JSON.parse(response.body)["meta"]["from"]).to eq(1) # From record
+        expect(JSON.parse(response.body)["meta"]["to"]).to eq(25) # To record
+        expect(JSON.parse(response.body)["meta"]["last"]).to eq(2) # Last page
+      end
+
+      it "returns paginated assignments" do
+        get :index, params: { options: { page: 2, limit: 10 } }
+
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)["data"].length).to eq(10)
+        expect(JSON.parse(response.body)["meta"]["page"]).to eq(2)
+        expect(JSON.parse(response.body)["meta"]["count"]).to eq(40)
+        expect(JSON.parse(response.body)["meta"]["next"]).to eq(3)
+        expect(JSON.parse(response.body)["meta"]["from"]).to eq(11)
+        expect(JSON.parse(response.body)["meta"]["to"]).to eq(20)
+        expect(JSON.parse(response.body)["meta"]["last"]).to eq(4)
+      end
     end
 
     it "renders correctly when no records exist" do
