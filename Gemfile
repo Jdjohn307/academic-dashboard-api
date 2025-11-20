@@ -29,6 +29,10 @@ gem "active_model_serializers", "~> 0.10.15"
 # Gem:  https://rubygems.org/gems/jsonapi-rails
 gem "jsonapi-rails", "~> 0.4.1"
 
+# Fast and efficient pagination library for Ruby on Rails.
+# Docs: https://ddnexus.github.io/pagy/guides/quick-start/
+gem "pagy", "~> 43.1" # Omit the patch segment to avoid breaking changes
+
 # Fast and flexible serializer for generating JSON:API-compliant output.
 # Successor to fast_jsonapi — compatible with jsonapi-rails.
 # Docs: https://github.com/jsonapi-serializer/jsonapi-serializer
@@ -93,5 +97,8 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  # Shoulda Matchers: RSpec matchers for testing validations and associations
+  # GitHub: [https://github.com/thoughtbot/shoulda-matchers]
   gem "shoulda-matchers", "~> 6.0"
 end
