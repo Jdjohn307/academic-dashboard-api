@@ -1,7 +1,6 @@
 module Api
-  class BaseController < ActionController::Base
+  class BaseController < ActionController::API
     include Pagy::Method
-    protect_from_forgery with: :null_session
 
     before_action :permit_options, only: [ :index ]
 
