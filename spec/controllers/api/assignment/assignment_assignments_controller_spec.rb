@@ -153,7 +153,7 @@ RSpec.describe Api::Assignment::AssignmentsController, type: :controller do
     context "with invalid attributes" do
       it "returns errors for missing parameters" do
         post :create, params: {}
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = JSON.parse(response.body)
         expect(json['errors']).to be_present
       end
@@ -161,7 +161,7 @@ RSpec.describe Api::Assignment::AssignmentsController, type: :controller do
       it "returns errors for invalid parameters" do
         invalid_params = attributes_for(:assignment, :assignment_invalid_points).merge(course_schedule_id: course_schedule.id)
         post :create, params: invalid_params
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = JSON.parse(response.body)
         expect(json['errors'].length).to eq(1)
         expect(json['errors'][0]['detail']).to eq('Points possible is not a number')
@@ -170,7 +170,7 @@ RSpec.describe Api::Assignment::AssignmentsController, type: :controller do
       it "returns errors for invalid parameters with complex validation" do
         invalid_params = attributes_for(:assignment, :assignment_invalid_due_date).merge(course_schedule_id: course_schedule.id)
         post :create, params: invalid_params
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = JSON.parse(response.body)
         expect(json['errors'].length).to eq(1)
         expect(json['errors'][0]['detail']).to include('Due date must be less than or equal to')
