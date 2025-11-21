@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_17_180510) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_21_175938) do
   create_schema "assignment"
   create_schema "course"
   create_schema "reporting"
@@ -29,6 +29,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_17_180510) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["course_schedule_id"], name: "index_assignment_on_course_schedule_id"
+    t.index ["id"], name: "index_assignment_on_id"
   end
 
   create_table "assignment_grade_link", force: :cascade do |t|
@@ -44,6 +45,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_17_180510) do
     t.datetime "updated_at", null: false
     t.index ["assignment_id"], name: "index_assignment_grade_link_on_assignment_id"
     t.index ["grade_id"], name: "index_assignment_grade_link_on_grade_id"
+    t.index ["id"], name: "index_assignment_grade_link_on_id"
   end
 
   create_table "course", force: :cascade do |t|
@@ -54,6 +56,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_17_180510) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["id"], name: "index_course_on_id"
   end
 
   create_table "course_schedule", force: :cascade do |t|
@@ -66,6 +69,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_17_180510) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["course_id"], name: "index_course_schedule_on_course_id"
+    t.index ["id"], name: "index_course_schedule_on_id"
   end
 
   create_table "course_schedule_link", force: :cascade do |t|
@@ -75,6 +79,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_17_180510) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["course_schedule_id"], name: "index_course_schedule_link_on_course_schedule_id"
+    t.index ["id"], name: "index_course_schedule_link_on_id"
     t.index ["user_id"], name: "index_course_schedule_link_on_user_id"
   end
 
@@ -87,6 +92,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_17_180510) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["course_schedule_id"], name: "index_course_schedule_override_on_course_schedule_id"
+    t.index ["id"], name: "index_course_schedule_override_on_id"
   end
 
   create_table "grade", force: :cascade do |t|
@@ -98,6 +104,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_17_180510) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["course_id"], name: "index_grade_on_course_id"
+    t.index ["id"], name: "index_grade_on_id"
     t.index ["user_id"], name: "index_grade_on_user_id"
   end
 
@@ -106,6 +113,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_17_180510) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["id"], name: "index_role_on_id"
   end
 
   create_table "test_tables", force: :cascade do |t|
@@ -121,6 +129,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_17_180510) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["id"], name: "index_user_on_id"
   end
 
   create_table "user_role_link", force: :cascade do |t|
@@ -129,6 +138,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_17_180510) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["id"], name: "index_user_role_link_on_id"
     t.index ["role_id"], name: "index_user_role_link_on_role_id"
     t.index ["user_id"], name: "index_user_role_link_on_user_id"
   end
