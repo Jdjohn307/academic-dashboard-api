@@ -139,7 +139,7 @@ RSpec.describe Api::Course::CourseSchedulesController, type: :controller do
     context "with invalid attributes" do
       it "returns errors" do
         post :create, params: { name: nil }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end

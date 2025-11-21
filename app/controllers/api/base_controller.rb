@@ -65,15 +65,15 @@ module Api
     end
 
     def record_not_saved(exception)
-      render json: { errors: [ jsonapi_error(exception.message, "Unprocessable Entity", :unprocessable_entity) ] }, status: :unprocessable_entity
+      render json: { errors: [ jsonapi_error(exception.message, "Unprocessable Entity", :unprocessable_content) ] }, status: :unprocessable_content
     end
 
     def render_unprocessable_entity(exception)
       record = exception.record
       errors = record.errors.map do |error|
-        jsonapi_error(error.full_message, "Unprocessable Entity", :unprocessable_entity, "/data/attributes/#{error.attribute}")
+        jsonapi_error(error.full_message, "Unprocessable Entity", :unprocessable_content, "/data/attributes/#{error.attribute}")
       end
-      render json: { errors: errors }, status: :unprocessable_entity
+      render json: { errors: errors }, status: :unprocessable_content
     end
 
     def jsonapi_error(detail, title, status, source_pointer = nil)
