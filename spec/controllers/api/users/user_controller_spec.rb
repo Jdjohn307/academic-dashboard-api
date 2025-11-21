@@ -154,7 +154,7 @@ RSpec.describe Api::Users::UsersController, type: :controller do
     context "with invalid attributes" do
       it "returns errors for missing parameters" do
         post :create, params: {}
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = JSON.parse(response.body)
         expect(json['errors']).to be_present
       end
@@ -162,7 +162,7 @@ RSpec.describe Api::Users::UsersController, type: :controller do
       it "returns errors for invalid parameters" do
         invalid_params = attributes_for(:user, :user_invalid_status)
         post :create, params: invalid_params
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = JSON.parse(response.body)
         expect(json['errors']).to be_present
       end
@@ -195,7 +195,7 @@ RSpec.describe Api::Users::UsersController, type: :controller do
 
     it "returns errors for invalid parameters" do
       patch :update, params: { id: user.id, status: "banana" }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json = JSON.parse(response.body)
       expect(json['errors']).to be_present
     end

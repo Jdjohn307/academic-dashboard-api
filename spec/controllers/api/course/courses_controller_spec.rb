@@ -147,13 +147,13 @@ RSpec.describe Api::Course::CoursesController, type: :controller do
     context "with invalid attributes" do
       it "returns errors for missing parameters" do
         post :create, params: {}
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = JSON.parse(response.body)
         expect(json['errors']).to be_present
       end
       it "returns errors for invalid parameters" do
         post :create, params: { name: nil }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = JSON.parse(response.body)
         expect(json['errors']).to be_present
       end
@@ -179,7 +179,7 @@ RSpec.describe Api::Course::CoursesController, type: :controller do
     end
     it "returns errors for invalid parameters" do
       patch :update, params: { id: course.id, name: nil }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json = JSON.parse(response.body)
       expect(json['errors']).to be_present
     end
