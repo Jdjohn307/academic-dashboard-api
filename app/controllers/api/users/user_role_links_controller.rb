@@ -5,7 +5,7 @@ module Api
 
       # GET /api/users/user_role_links
       def index
-        render jsonapi: UserRoleLink.all, status: :ok
+        render_paginated(UserRoleLink.all, permit_options[:options] || {})
       end
 
       # GET /api/users/user_role_links/:id

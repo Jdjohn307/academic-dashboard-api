@@ -6,41 +6,110 @@ RSpec.describe Api::Assignment::AssignmentsController, type: :controller do
 
   describe "GET #index" do
     context "with records" do
-      before do
-        create_list(:assignment, 40, course_schedule: course_schedule)
+      let!(:records) do
+        create_list(:assignment, 26, course_schedule: course_schedule)
       end
 
-      it "returns paginated assignments with default pagination" do
+      it "returns paginated with default pagination" do
         get :index
 
         expect(response).to have_http_status(:ok)
-        expect(JSON.parse(response.body)["data"].length).to eq(25) # Default items per page is 25
-        expect(JSON.parse(response.body)["meta"]["page"]).to eq(1) # Default page is 1
-        expect(JSON.parse(response.body)["meta"]["count"]).to eq(40) # Total records
-        expect(JSON.parse(response.body)["meta"]["next"]).to eq(2) # Next page
-        expect(JSON.parse(response.body)["meta"]["from"]).to eq(1) # From record
-        expect(JSON.parse(response.body)["meta"]["to"]).to eq(25) # To record
-        expect(JSON.parse(response.body)["meta"]["last"]).to eq(2) # Last page
+        json = JSON.parse(response.body)
+        expect(json['data'].length).to eq(25) # Default items per page is 25
+        expect(json["meta"]["page"]).to eq(1) # Default page is 1
+        expect(json["meta"]["count"]).to eq(26) # Total records
+        expect(json["meta"]["next"]).to eq(2) # Next page
+        expect(json["meta"]["from"]).to eq(1) # From record
+        expect(json["meta"]["to"]).to eq(25) # To record
+        expect(json["meta"]["last"]).to eq(2) # Last page
       end
 
-      it "returns paginated assignments" do
+      it "returns paginated" do
         get :index, params: { options: { page: 2, limit: 10 } }
 
         expect(response).to have_http_status(:ok)
-        expect(JSON.parse(response.body)["data"].length).to eq(10)
-        expect(JSON.parse(response.body)["meta"]["page"]).to eq(2)
-        expect(JSON.parse(response.body)["meta"]["count"]).to eq(40)
-        expect(JSON.parse(response.body)["meta"]["next"]).to eq(3)
-        expect(JSON.parse(response.body)["meta"]["from"]).to eq(11)
-        expect(JSON.parse(response.body)["meta"]["to"]).to eq(20)
-        expect(JSON.parse(response.body)["meta"]["last"]).to eq(4)
+        json = JSON.parse(response.body)
+        expect(json['data'].length).to eq(10)
+        expect(json["meta"]["page"]).to eq(2)
+        expect(json["meta"]["count"]).to eq(26)
+        expect(json["meta"]["next"]).to eq(3)
+        expect(json["meta"]["from"]).to eq(11)
+        expect(json["meta"]["to"]).to eq(20)
+        expect(json["meta"]["last"]).to eq(3)
+      end
+
+      it "falls back to page 1 when page is invalid" do
+        get :index, params: { options: { page: -1 } }
+
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['data'].length).to eq(25) # Default items per page is 25
+        expect(json["meta"]["page"]).to eq(1) # Default page is 1
+        expect(json["meta"]["count"]).to eq(26) # Total records
+        expect(json["meta"]["next"]).to eq(2) # Next page
+        expect(json["meta"]["from"]).to eq(1) # From record
+        expect(json["meta"]["to"]).to eq(25) # To record
+        expect(json["meta"]["last"]).to eq(2) # Last page
+      end
+
+      it "goes to correct page when only page parameter is passed in" do
+        get :index, params: { options: { page: 2 } }
+
+        json = JSON.parse(response.body)
+        expect(response).to have_http_status(:ok)
+        expect(json['data'].length).to eq(1)
+        expect(json["meta"]["page"]).to eq(2)
+        expect(json["meta"]["count"]).to eq(26)
+        expect(json["meta"]["next"]).to eq(nil)
+        expect(json["meta"]["from"]).to eq(26)
+        expect(json["meta"]["to"]).to eq(26)
+        expect(json["meta"]["last"]).to eq(2)
+      end
+
+      it "paginates correctly with only limit parameter" do
+        get :index, params: { options: { limit: 5 } }
+
+        json = JSON.parse(response.body)
+        expect(response).to have_http_status(:ok)
+        expect(json['data'].length).to eq(5)
+        expect(json["meta"]["page"]).to eq(1)
+        expect(json["meta"]["count"]).to eq(26)
+        expect(json["meta"]["next"]).to eq(2)
+        expect(json["meta"]["from"]).to eq(1)
+        expect(json["meta"]["to"]).to eq(5)
+        expect(json["meta"]["last"]).to eq(6)
+      end
+
+      it "returns empty data for page beyond last" do
+        get :index, params: { options: { page: 5, limit: 10 } } # only 3 pages exist
+
+        json = JSON.parse(response.body)
+        expect(json["data"]).to eq([])
+        expect(json["meta"]["page"]).to eq(5)
+        expect(json["meta"]["last"]).to eq(3)
+      end
+
+      it "handles invalid limit gracefully" do
+        get :index, params: { options: { limit: -5 } }
+
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['data'].length).to eq(25) # Default items per page is 25
+        expect(json["meta"]["page"]).to eq(1) # Default page is 1
+        expect(json["meta"]["count"]).to eq(26) # Total records
+        expect(json["meta"]["next"]).to eq(2) # Next page
+        expect(json["meta"]["from"]).to eq(1) # From record
+        expect(json["meta"]["to"]).to eq(25) # To record
+        expect(json["meta"]["last"]).to eq(2) # Last page
       end
     end
 
     it "renders correctly when no records exist" do
       get :index
       expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body)['data'].length).to eq(0)
+      json = JSON.parse(response.body)
+      expect(json['data'].length).to eq(0)
+      expect(json["meta"].keys).to include("page", "last", "from", "to", "count", "next")
     end
   end
 
@@ -48,7 +117,8 @@ RSpec.describe Api::Assignment::AssignmentsController, type: :controller do
     it "renders error when not found" do
       get :show, params: { id: -99 }
       expect(response).to have_http_status(:not_found)
-      error = JSON.parse(response.body)['errors'][0]
+      json = JSON.parse(response.body)
+      error = json['errors'][0]
       expect(error['title']).to eq('Not Found')
       expect(error['status']).to eq('404')
       expect(error['detail']).to match(/couldn't find/i)
@@ -58,8 +128,9 @@ RSpec.describe Api::Assignment::AssignmentsController, type: :controller do
       get :show, params: { id: assignment.id }
 
       expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body)['data']['id']).to eq("#{assignment.id}")
-      expect(JSON.parse(response.body)['data']['attributes'].keys).to contain_exactly(
+      json = JSON.parse(response.body)
+      expect(json['data']['id']).to eq("#{assignment.id}")
+      expect(json['data']['attributes'].keys).to contain_exactly(
         'course_schedule_id', 'due_date', 'title', 'description', 'points_possible', 'status'
       )
     end
@@ -72,7 +143,8 @@ RSpec.describe Api::Assignment::AssignmentsController, type: :controller do
         post :create, params: valid_params
 
         expect(response).to have_http_status(:created)
-        expect(JSON.parse(response.body)['data']['attributes'].keys).to contain_exactly(
+        json = JSON.parse(response.body)
+        expect(json['data']['attributes'].keys).to contain_exactly(
           'course_schedule_id', 'due_date', 'title', 'description', 'points_possible', 'status'
         )
       end
@@ -82,22 +154,26 @@ RSpec.describe Api::Assignment::AssignmentsController, type: :controller do
       it "returns errors for missing parameters" do
         post :create, params: {}
         expect(response).to have_http_status(:unprocessable_entity)
+        json = JSON.parse(response.body)
+        expect(json['errors']).to be_present
       end
 
       it "returns errors for invalid parameters" do
         invalid_params = attributes_for(:assignment, :assignment_invalid_points).merge(course_schedule_id: course_schedule.id)
         post :create, params: invalid_params
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body)['errors'].length).to eq(1)
-        expect(JSON.parse(response.body)['errors'][0]['detail']).to eq('Points possible is not a number')
+        json = JSON.parse(response.body)
+        expect(json['errors'].length).to eq(1)
+        expect(json['errors'][0]['detail']).to eq('Points possible is not a number')
       end
 
       it "returns errors for invalid parameters with complex validation" do
         invalid_params = attributes_for(:assignment, :assignment_invalid_due_date).merge(course_schedule_id: course_schedule.id)
         post :create, params: invalid_params
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body)['errors'].length).to eq(1)
-        expect(JSON.parse(response.body)['errors'][0]['detail']).to include('Due date must be less than or equal to')
+        json = JSON.parse(response.body)
+        expect(json['errors'].length).to eq(1)
+        expect(json['errors'][0]['detail']).to include('Due date must be less than or equal to')
       end
     end
   end
@@ -108,7 +184,8 @@ RSpec.describe Api::Assignment::AssignmentsController, type: :controller do
       patch :update, params: { id: assignment.id, title: "New Title" }
 
       expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body)['data']['attributes'].keys).to contain_exactly(
+      json = JSON.parse(response.body)
+      expect(json['data']['attributes'].keys).to contain_exactly(
         'course_schedule_id', 'due_date', 'title', 'description', 'points_possible', 'status'
       )
       expect(assignment.reload.title).to eq("New Title")
@@ -116,7 +193,8 @@ RSpec.describe Api::Assignment::AssignmentsController, type: :controller do
     it "renders error when not found" do
       patch :update, params: { id: -99, title: "New Title" }
       expect(response).to have_http_status(:not_found)
-      error = JSON.parse(response.body)['errors'][0]
+      json = JSON.parse(response.body)
+      error = json['errors'][0]
       expect(error['title']).to eq('Not Found')
       expect(error['status']).to eq('404')
       expect(error['detail']).to match(/couldn't find/i)
@@ -134,7 +212,8 @@ RSpec.describe Api::Assignment::AssignmentsController, type: :controller do
     it "renders error when not found" do
       delete :destroy, params: { id: -99 }
       expect(response).to have_http_status(:not_found)
-      error = JSON.parse(response.body)['errors'][0]
+      json = JSON.parse(response.body)
+      error = json['errors'][0]
       expect(error['title']).to eq('Not Found')
       expect(error['status']).to eq('404')
       expect(error['detail']).to match(/couldn't find/i)

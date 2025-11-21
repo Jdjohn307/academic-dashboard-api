@@ -5,8 +5,7 @@ module Api
 
       # GET /api/users/users
       def index
-        users = User.all
-        render jsonapi: users, status: :ok
+        render_paginated(User.all, permit_options[:options] || {})
       end
 
       # GET /api/users/users/:id

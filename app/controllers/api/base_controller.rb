@@ -9,7 +9,7 @@ module Api
     rescue_from ActiveRecord::RecordNotSaved, with: :record_not_saved
     rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity
 
-    # Pagy pagination helper
+    # Pagy pagination helpers
     def paginate(results, options = {})
       pagy, records = if results.is_a? Array
         pagy_array(results, **options)
@@ -20,8 +20,22 @@ module Api
       [ records, pagy ]
     end
 
+    def normalize_pagination_params(params)
+      options = (params || {}).to_h.symbolize_keys
+
+      # the to_i calls will convert nil and non-numeric strings to 0
+      page  = options[:page].to_i
+      limit = options[:limit].to_i
+
+      # handle invalid values by removing the key to use defaults
+      page > 0 ? options[:page] = page : options.delete(:page)
+      limit > 0 ? options[:limit] = limit : options.delete(:limit)
+      options
+    end
+
+
     def render_paginated(records, option_params = {})
-      options = (option_params || {}).to_h.symbolize_keys
+      options = normalize_pagination_params(option_params)
       paginated_records, pagy = paginate(records, options)
 
       render json: {

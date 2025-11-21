@@ -5,7 +5,7 @@ module Api
 
       # GET /api/course/course_schedules_overrides
       def index
-        render jsonapi: CourseScheduleOverride.all, status: :ok
+        render_paginated(CourseScheduleOverride.all, permit_options[:options] || {})
       end
 
       # GET /api/course/course_schedules_overrides/:id

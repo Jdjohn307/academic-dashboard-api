@@ -5,7 +5,7 @@ module Api
 
       # GET /api/assignment/assignment_grade_links
       def index
-        render jsonapi: AssignmentGradeLink.all, status: :ok
+        render_paginated(AssignmentGradeLink.all, permit_options[:options] || {})
       end
 
       # GET /api/assignment/assignment_grade_links/:id
