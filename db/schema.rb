@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_21_175938) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_21_184340) do
   create_schema "assignment"
   create_schema "course"
   create_schema "reporting"
@@ -125,7 +125,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_21_175938) do
   create_table "user", force: :cascade do |t|
     t.string "name", null: false
     t.string "email", null: false
-    t.string "encrypted_password", null: false
+    t.string "password_digest", null: false
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

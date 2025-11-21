@@ -2,7 +2,9 @@ FactoryBot.define do
   factory :user, class: 'Api::Users::User' do
     name { "Jane Doe" }
     email { "jane@example.com" }
-    encrypted_password { "securepassword" }
+    password { "securepassword" }
+    password_confirmation { "securepassword" }
+
     status { "active" }
 
     # Traits for invalid/edge cases

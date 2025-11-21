@@ -3,10 +3,12 @@ module Api
     class User < ApplicationRecord
       self.table_name = "user"
 
+      has_secure_password
+
       # Validation
       validates :name, presence: true, length: { maximum: 100 }
       validates :email, presence: true, length: { maximum: 255 }
-      validates :encrypted_password, presence: true
+      validates :password, length: { minimum: 8 }, if: -> { password.present? }
       validates :status, inclusion: {
         in: [ "active", "inactive", "archived" ],
         message: "%{value} is not a valid status"

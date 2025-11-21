@@ -35,7 +35,7 @@ module Api
       private
 
       def user_params
-        params.permit(:name, :email, :encrypted_password, :status)
+       params.permit(:name, :email, :password, :password_confirmation, :status)
       end
 
       def set_user_record

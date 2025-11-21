@@ -131,7 +131,7 @@ RSpec.describe Api::Users::UsersController, type: :controller do
       json = JSON.parse(response.body)
       expect(json['data']['id']).to eq("#{user.id}")
       expect(json['data']['attributes'].keys).to contain_exactly(
-        'name', 'email', 'encrypted_password', 'status'
+        'name', 'email', 'status'
       )
     end
   end
@@ -146,8 +146,12 @@ RSpec.describe Api::Users::UsersController, type: :controller do
         expect(response).to have_http_status(:created)
         json = JSON.parse(response.body)
         expect(json['data']['attributes'].keys).to contain_exactly(
-          'name', 'email', 'encrypted_password', 'status'
+          'name', 'email', 'status'
         )
+
+        # Verify that the password is hashed correctly and can be authenticated
+        created_user = Api::Users::User.find(json['data']['id'])
+        expect(created_user.authenticate(valid_params[:password])).to eq(created_user)
       end
     end
 
@@ -178,7 +182,7 @@ RSpec.describe Api::Users::UsersController, type: :controller do
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
       expect(json['data']['attributes'].keys).to contain_exactly(
-        'name', 'email', 'encrypted_password', 'status'
+        'name', 'email', 'status'
       )
       expect(user.reload.name).to eq("New Name")
     end
