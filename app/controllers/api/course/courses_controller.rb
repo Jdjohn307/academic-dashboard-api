@@ -19,7 +19,7 @@ module Api
         if course_record.save
           render jsonapi: course_record, status: :created
         else
-          render json: { errors: course_record.errors.full_messages.map { |msg| { title: "Invalid Data", detail: msg, status: "unprocessable_entity" } } }, status: :unprocessable_entity
+          render json: { errors: course_record.errors.full_messages.map { |msg| { title: "Invalid Data", detail: msg, status: "unprocessable_entity" } } }, status: :unprocessable_content
         end
       end
 
