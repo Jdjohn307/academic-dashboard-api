@@ -19,7 +19,7 @@ module Api
         if user_role_link_record.save
           render jsonapi: user_role_link_record, status: :created
         else
-          render json: { errors: user_role_link_record.errors.full_messages.map { |msg| { title: "Invalid Data", detail: msg, status: "unprocessable_entity" } } }, status: :unprocessable_entity
+          render json: { errors: user_role_link_record.errors.full_messages.map { |msg| { title: "Invalid Data", detail: msg, status: "unprocessable_entity" } } }, status: :unprocessable_content
         end
       end
 
