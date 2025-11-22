@@ -86,6 +86,10 @@ group :development, :test do
   # GitHub: https://github.com/DatabaseCleaner/database_cleaner-active_record
   # RubyGems: https://rubygems.org/gems/database_cleaner-active_record
   gem "database_cleaner-active_record"
+
+  # Rswag: Seamlessly integrate Swagger with Rails APIs
+  # GitHub: https://github.com/rswag/rswag
+  gem 'rswag'
 end
 
 group :development do
