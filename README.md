@@ -100,6 +100,16 @@ All routes are namespaced under `/api`. Highlights:
 
 Swagger documentation mirrors all endpoints for easy testing and integration.
 
+## Continuous Integration
+
+This project uses GitHub Actions for continuous integration. On every push or pull request to `main`, the workflow automatically:
+
+- Run **Brakeman** to scan for common Rails security vulnerabilities.
+- Run **RuboCop** to enforce consistent code style.
+- Set up a PostgreSQL database and run the full **RSpec test suite**, including Swagger tests for API endpoints.
+
+The workflow is defined in `.github/workflows/ci.yml`.
+
 ## Notes
 
 * Transactional fixtures are disabled in favor of Database Cleaner.
