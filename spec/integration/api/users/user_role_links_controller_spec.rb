@@ -17,8 +17,8 @@ RSpec.describe 'User Role Links API', swagger_doc: 'v1/swagger.yaml', type: :req
         let(:'options[page]') { nil }
         let(:'options[limit]') { nil }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(25)
           expect(json['meta']['page']).to eq(1)
         end
@@ -29,8 +29,8 @@ RSpec.describe 'User Role Links API', swagger_doc: 'v1/swagger.yaml', type: :req
         let(:'options[page]') { 2 }
         let(:'options[limit]') { 10 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(10)
           expect(json['meta']['page']).to eq(2)
         end
@@ -40,8 +40,8 @@ RSpec.describe 'User Role Links API', swagger_doc: 'v1/swagger.yaml', type: :req
         before { create_list(:user_role_link, 26, user: user, role: role) }
         let(:'options[page]') { -1 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(25)
         end
       end
@@ -50,8 +50,8 @@ RSpec.describe 'User Role Links API', swagger_doc: 'v1/swagger.yaml', type: :req
         before { create_list(:user_role_link, 26, user: user, role: role) }
         let(:'options[page]') { 2 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(1)
           expect(json['meta']['page']).to eq(2)
         end
@@ -61,8 +61,8 @@ RSpec.describe 'User Role Links API', swagger_doc: 'v1/swagger.yaml', type: :req
         before { create_list(:user_role_link, 26, user: user, role: role) }
         let(:'options[limit]') { 5 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(5)
         end
       end
@@ -72,8 +72,8 @@ RSpec.describe 'User Role Links API', swagger_doc: 'v1/swagger.yaml', type: :req
         let(:'options[page]') { 5 }
         let(:'options[limit]') { 10 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data']).to eq([])
           expect(json['meta']['page']).to eq(5)
           expect(json['meta']['last']).to eq(3)
@@ -84,15 +84,15 @@ RSpec.describe 'User Role Links API', swagger_doc: 'v1/swagger.yaml', type: :req
         before { create_list(:user_role_link, 26, user: user, role: role) }
         let(:'options[limit]') { -5 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(25)
         end
       end
 
       response '200', 'empty list' do
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data']).to eq([])
           expect(json['meta'].keys).to include('page', 'last', 'from', 'to', 'count', 'next')
         end
@@ -116,24 +116,24 @@ RSpec.describe 'User Role Links API', swagger_doc: 'v1/swagger.yaml', type: :req
       response '201', 'created' do
         let(:user_role_link) { attributes_for(:user_role_link).merge(user_id: user.id, role_id: role.id) }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data']['attributes'].keys).to contain_exactly('user_id', 'role_id', 'status')
         end
       end
 
       response '422', 'missing' do
         let(:user_role_link) { {} }
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors']).to be_present
         end
       end
 
       response '422', 'invalid' do
         let(:user_role_link) { { user_id: nil } }
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors']).to be_present
         end
       end
@@ -149,9 +149,11 @@ RSpec.describe 'User Role Links API', swagger_doc: 'v1/swagger.yaml', type: :req
 
       response '404', 'not found' do
         let(:id) { -99 }
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors'][0]['title']).to eq('Not Found')
+          expect(json['errors'][0]['status']).to eq('404')
+          expect(json['errors'][0]['detail']).to match(/Couldn't find .+UserRoleLink.+/)
         end
       end
 
@@ -159,8 +161,8 @@ RSpec.describe 'User Role Links API', swagger_doc: 'v1/swagger.yaml', type: :req
         let!(:record) { create(:user_role_link, user: user, role: role) }
         let(:id) { record.id }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data']['id']).to eq(record.id.to_s)
           expect(json['data']['attributes'].keys).to contain_exactly('user_id', 'role_id', 'status')
         end
@@ -185,9 +187,11 @@ RSpec.describe 'User Role Links API', swagger_doc: 'v1/swagger.yaml', type: :req
         let(:id) { link.id }
         let(:user_role_link) { { role_id: create(:role).id } }
 
-        run_test! do |_res|
+        run_test! do |response|
           link.reload
           expect(link.role_id).to_not eq(role.id)
+          json = JSON.parse(response.body)
+          expect(json['data']['attributes'].keys).to contain_exactly('user_id', 'role_id', 'status')
         end
       end
 
@@ -195,9 +199,11 @@ RSpec.describe 'User Role Links API', swagger_doc: 'v1/swagger.yaml', type: :req
         let(:id) { -99 }
         let(:user_role_link) { { role_id: role.id } }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors'][0]['title']).to eq('Not Found')
+          expect(json['errors'][0]['status']).to eq('404')
+          expect(json['errors'][0]['detail']).to match(/Couldn't find .+UserRoleLink.+/)
         end
       end
 
@@ -206,8 +212,8 @@ RSpec.describe 'User Role Links API', swagger_doc: 'v1/swagger.yaml', type: :req
         let(:id) { link.id }
         let(:user_role_link) { { user_id: nil } }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors']).to be_present
         end
       end
@@ -220,16 +226,18 @@ RSpec.describe 'User Role Links API', swagger_doc: 'v1/swagger.yaml', type: :req
         let!(:link) { create(:user_role_link, user: user, role: role) }
         let(:id) { link.id }
 
-        run_test! do |_res|
+        run_test! do |response|
           expect(Api::Users::UserRoleLink.exists?(id)).to be_falsey
         end
       end
 
       response '404', 'not found' do
         let(:id) { -99 }
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors'][0]['title']).to eq('Not Found')
+          expect(json['errors'][0]['status']).to eq('404')
+          expect(json['errors'][0]['detail']).to match(/Couldn't find .+UserRoleLink.+/)
         end
       end
     end

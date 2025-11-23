@@ -15,8 +15,8 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
         let(:'options[page]') { nil }
         let(:'options[limit]') { nil }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(25)
           expect(json['meta']['page']).to eq(1)
           expect(json['meta']['count']).to eq(26)
@@ -28,8 +28,8 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
         let(:'options[page]') { 2 }
         let(:'options[limit]') { 10 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(10)
           expect(json['meta']['page']).to eq(2)
           expect(json['meta']['last']).to eq(3)
@@ -40,8 +40,8 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
         before { create_list(:course_schedule, 26, course: course) }
         let(:'options[page]') { -1 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(25)
           expect(json['meta']['page']).to eq(1)
         end
@@ -51,8 +51,8 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
         before { create_list(:course_schedule, 26, course: course) }
         let(:'options[page]') { 2 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(1)
           expect(json['meta']['page']).to eq(2)
         end
@@ -62,8 +62,8 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
         before { create_list(:course_schedule, 26, course: course) }
         let(:'options[limit]') { 5 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(5)
           expect(json['meta']['last']).to eq(6)
         end
@@ -74,8 +74,8 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
         let(:'options[page]') { 5 }
         let(:'options[limit]') { 10 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data']).to eq([])
           expect(json['meta']['page']).to eq(5)
           expect(json['meta']['last']).to eq(3)
@@ -86,16 +86,16 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
         before { create_list(:course_schedule, 26, course: course) }
         let(:'options[limit]') { -5 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(25)
           expect(json['meta']['page']).to eq(1)
         end
       end
 
       response '200', 'empty list' do
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data']).to eq([])
           expect(json['meta'].keys).to include('page', 'last', 'from', 'to', 'count', 'next')
         end
@@ -122,8 +122,8 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
       response '201', 'created' do
         let(:course_schedule) { attributes_for(:course_schedule).merge(course_id: course.id) }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data']['attributes'].keys).to contain_exactly('name', 'course_id', 'start_date', 'end_date', 'schedule_json', 'status')
         end
       end
@@ -131,8 +131,8 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
       response '422', 'missing' do
         let(:course_schedule) { {} }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors']).to be_present
         end
       end
@@ -140,8 +140,8 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
       response '422', 'invalid' do
         let(:course_schedule) { { name: nil } }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors']).to be_present
         end
       end
@@ -157,9 +157,11 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
 
       response '404', 'not found' do
         let(:id) { -99 }
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors'][0]['title']).to eq('Not Found')
+          expect(json['errors'][0]['status']).to eq('404')
+          expect(json['errors'][0]['detail']).to match(/Couldn't find .+CourseSchedule.+/)
         end
       end
 
@@ -167,8 +169,8 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
         let!(:record) { create(:course_schedule, course: course) }
         let(:id) { record.id }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data']['id']).to eq(record.id.to_s)
           expect(json['data']['attributes'].keys).to contain_exactly('name', 'course_id', 'start_date', 'end_date', 'schedule_json', 'status')
         end
@@ -186,9 +188,12 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
         let(:id) { record.id }
         let(:course_schedule) { { name: 'New Name' } }
 
-        run_test! do |res|
+        run_test! do |response|
           record.reload
           expect(record.name).to eq('New Name')
+          json = JSON.parse(response.body)
+          expect(json['data']['id']).to eq(record.id.to_s)
+          expect(json['data']['attributes'].keys).to contain_exactly('name', 'course_id', 'start_date', 'end_date', 'schedule_json', 'status')
         end
       end
 
@@ -196,9 +201,11 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
         let(:id) { -99 }
         let(:course_schedule) { { name: 'New Name' } }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors'][0]['status']).to eq('404')
+          expect(json['errors'][0]['title']).to eq('Not Found')
+          expect(json['errors'][0]['detail']).to match(/Couldn't find .+CourseSchedule.+/)
         end
       end
 
@@ -207,8 +214,8 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
         let(:id) { record.id }
         let(:course_schedule) { { name: nil } }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors']).to be_present
         end
       end
@@ -221,7 +228,7 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
         let!(:record) { create(:course_schedule, course: course) }
         let(:id) { record.id }
 
-        run_test! do |res|
+        run_test! do |response|
           expect(Api::Course::CourseSchedule.exists?(id)).to be_falsey
         end
       end
@@ -229,9 +236,11 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
       response '404', 'not found' do
         let(:id) { -99 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['errors'][0]['title']).to eq('Not Found')
           expect(json['errors'][0]['status']).to eq('404')
+          expect(json['errors'][0]['detail']).to match(/Couldn't find .+CourseSchedule.+/)
         end
       end
     end

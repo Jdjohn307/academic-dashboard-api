@@ -31,6 +31,11 @@ Rails.application.routes.draw do
         resources :roles
         resources :users
         resources :user_role_links
+
+        # Authentication routes
+        post "/auth/login",    to: "sessions#create"
+        post "/auth/logout",   to: "sessions#destroy"
+        post "/auth/register", to: "registrations#create"
       end
 
       resources :test_table

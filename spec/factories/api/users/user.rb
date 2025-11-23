@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :user, class: 'Api::Users::User' do
     name { "Jane Doe" }
-    email { "jane@example.com" }
+    sequence(:email) { |n| "jane#{n}@example.com" }  # unique email for each user
     password { "securepassword" }
     password_confirmation { "securepassword" }
 

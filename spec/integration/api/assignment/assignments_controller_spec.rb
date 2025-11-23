@@ -141,11 +141,52 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
         end
       end
     end
-  end
 
-  # =========================================================
-  # SHOW / CREATE / UPDATE / DELETE
-  # =========================================================
+    post 'Create assignment' do
+      tags 'Assignments'
+      consumes 'application/json'
+      produces 'application/json'
+      parameter name: :assignment, in: :body, schema: {
+        type: :object,
+        properties: {
+          course_schedule_id: { type: :integer },
+          due_date: { type: :string, format: :date_time },
+          title: { type: :string },
+          description: { type: :string },
+          points_possible: { type: :number },
+          status: { type: :string }
+        },
+        required: [ 'course_schedule_id', 'due_date', 'title', 'points_possible', 'status' ]
+      }
+
+      response '201', 'created' do
+        let(:assignment) { attributes_for(:assignment).merge(course_schedule_id: course_schedule.id) }
+
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['data']['attributes'].keys).to contain_exactly('course_schedule_id', 'due_date', 'title', 'description', 'points_possible', 'status')
+        end
+      end
+
+      response '422', 'missing' do
+        let(:assignment) { {} }
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['errors']).to be_present
+        end
+      end
+
+      response '422', 'invalid' do
+        let(:assignment) { attributes_for(:assignment, course_schedule_id: nil) }
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['errors'][0]['status']).to eq('422')
+          expect(json['errors'][0]['title']).to eq('Unprocessable Entity')
+          expect(json['errors'][0]['detail']).to match(/Course schedule can't be blank/)
+        end
+      end
+    end
+  end
 
   path '/api/assignment/assignments/{id}' do
     parameter name: :id, in: :path, type: :string, required: true
@@ -159,9 +200,10 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
 
         run_test! do |response|
           json = JSON.parse(response.body)
-          err = json['errors'][0]
-          expect(err['title']).to eq('Not Found')
-          expect(err['status']).to eq('404')
+          json = JSON.parse(response.body)
+          expect(json['errors'][0]['status']).to eq('404')
+          expect(json['errors'][0]['title']).to eq('Not Found')
+          expect(json['errors'][0]['detail']).to match(/Couldn't find .+Assignment.+/)
         end
       end
 
@@ -204,6 +246,21 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
           json = JSON.parse(response.body)
           expect(assignment_record.title).to eq('New Title')
           expect(json['data']['attributes']['title']).to eq('New Title')
+          expect(json['data']['attributes'].keys).to contain_exactly(
+            'course_schedule_id', 'due_date', 'title',
+            'description', 'points_possible', 'status'
+          )
+        end
+      end
+      response '404', 'not found' do
+        let(:id) { -99 }
+        let(:assignment) { { title: 'New Title' } }
+
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['errors'][0]['title']).to eq('Not Found')
+          expect(json['errors'][0]['status']).to eq('404')
+          expect(json['errors'][0]['detail']).to match(/Couldn't find .+Assignment.+/)
         end
       end
     end
@@ -226,7 +283,9 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
 
         run_test! do |response|
           json = JSON.parse(response.body)
+          expect(json['errors'][0]['title']).to eq('Not Found')
           expect(json['errors'][0]['status']).to eq('404')
+          expect(json['errors'][0]['detail']).to match(/Couldn't find .+Assignment.+/)
         end
       end
     end

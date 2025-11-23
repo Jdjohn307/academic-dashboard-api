@@ -14,8 +14,8 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
         let(:'options[page]')  { nil }
         let(:'options[limit]') { nil }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(25)
           expect(json['meta']['page']).to eq(1)
           expect(json['meta']['count']).to eq(26)
@@ -31,8 +31,8 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
         let(:'options[page]')  { 2 }
         let(:'options[limit]') { 10 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(10)
           expect(json['meta']['page']).to eq(2)
           expect(json['meta']['count']).to eq(26)
@@ -47,8 +47,8 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
         before { create_list(:user, 26) }
         let(:'options[page]') { -1 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(25)
           expect(json['meta']['page']).to eq(1)
         end
@@ -58,8 +58,8 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
         before { create_list(:user, 26) }
         let(:'options[page]') { 2 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(1)
           expect(json['meta']['page']).to eq(2)
           expect(json['meta']['from']).to eq(26)
@@ -73,8 +73,8 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
         before { create_list(:user, 26) }
         let(:'options[limit]') { 5 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(5)
           expect(json['meta']['page']).to eq(1)
           expect(json['meta']['last']).to eq(6)
@@ -86,8 +86,8 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
         let(:'options[page]') { 5 }
         let(:'options[limit]') { 10 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data']).to eq([])
           expect(json['meta']['page']).to eq(5)
           expect(json['meta']['last']).to eq(3)
@@ -98,8 +98,8 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
         before { create_list(:user, 26) }
         let(:'options[limit]') { -5 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(25)
           expect(json['meta']['page']).to eq(1)
         end
@@ -109,8 +109,8 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
         let(:'options[page]') { nil }
         let(:'options[limit]') { nil }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data']).to eq([])
           expect(json['meta'].keys).to include('page', 'last', 'from', 'to', 'count', 'next')
         end
@@ -135,8 +135,8 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
       response '201', 'created' do
         let(:user) { attributes_for(:user) }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data']['attributes'].keys).to contain_exactly('name', 'email', 'status')
 
           created = Api::Users::User.find(json['data']['id'])
@@ -145,18 +145,18 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
         end
       end
 
-      response '422', 'missing params' do
+      response '422', 'missing' do
         let(:user) { {} }
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors']).to be_present
         end
       end
 
-      response '422', 'invalid params' do
+      response '422', 'invalid' do
         let(:user) { attributes_for(:user, :user_invalid_status) }
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors']).to be_present
         end
       end
@@ -172,12 +172,11 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
 
       response '404', 'not found' do
         let(:id) { -99 }
-        run_test! do |res|
-          json = JSON.parse(res.body)
-          err = json['errors'][0]
-          expect(err['title']).to eq('Not Found')
-          expect(err['status']).to eq('404')
-          expect(err['detail']).to match(/Couldn't find .+User.+/)
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['errors'][0]['title']).to eq('Not Found')
+          expect(json['errors'][0]['status']).to eq('404')
+          expect(json['errors'][0]['detail']).to match(/Couldn't find .+User.+/)
         end
       end
 
@@ -185,8 +184,8 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
         let!(:record_user) { create(:user) }
         let(:id) { record_user.id }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data']['id']).to eq(record_user.id.to_s)
           expect(json['data']['attributes'].keys).to contain_exactly('name', 'email', 'status')
         end
@@ -210,11 +209,12 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
         let(:id) { record_user.id }
         let(:user) { { name: 'New Name' } }
 
-        run_test! do |res|
+        run_test! do |response|
           record_user.reload
-          json = JSON.parse(res.body)
-          expect(json['data']['attributes'].keys).to contain_exactly('name', 'email', 'status')
           expect(record_user.name).to eq('New Name')
+          json = JSON.parse(response.body)
+          expect(json['data']['attributes'].keys).to contain_exactly('name', 'email', 'status')
+          expect(json['data']['id']).to eq(record_user.id.to_s)
         end
       end
 
@@ -222,12 +222,11 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
         let(:id) { -99 }
         let(:user) { { name: 'New Name' } }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
-          err = json['errors'][0]
-          expect(err['title']).to eq('Not Found')
-          expect(err['status']).to eq('404')
-          expect(err['detail']).to match(/Couldn't find .+User.+/)
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['errors'][0]['title']).to eq('Not Found')
+          expect(json['errors'][0]['status']).to eq('404')
+          expect(json['errors'][0]['detail']).to match(/Couldn't find .+User.+/)
         end
       end
 
@@ -236,8 +235,8 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
         let(:id) { record_user.id }
         let(:user) { { status: 'banana' } }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors']).to be_present
         end
       end
@@ -250,7 +249,7 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
         let!(:record_user) { create(:user) }
         let(:id) { record_user.id }
 
-        run_test! do |_res|
+        run_test! do |response|
           expect(Api::Users::User.exists?(id)).to be_falsey
         end
       end
@@ -258,12 +257,11 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
       response '404', 'not found' do
         let(:id) { -99 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
-          err = json['errors'][0]
-          expect(err['title']).to eq('Not Found')
-          expect(err['status']).to eq('404')
-          expect(err['detail']).to match(/Couldn't find .+User.+/)
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['errors'][0]['title']).to eq('Not Found')
+          expect(json['errors'][0]['status']).to eq('404')
+          expect(json['errors'][0]['detail']).to match(/Couldn't find .+User.+/)
         end
       end
     end

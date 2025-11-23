@@ -17,8 +17,8 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
         let(:'options[page]') { nil }
         let(:'options[limit]') { nil }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(25)
           expect(json['meta']['page']).to eq(1)
         end
@@ -29,8 +29,8 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
         let(:'options[page]') { 2 }
         let(:'options[limit]') { 10 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(10)
           expect(json['meta']['page']).to eq(2)
         end
@@ -40,8 +40,8 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
         before { create_list(:course_schedule_override, 26, course_schedule: course_schedule) }
         let(:'options[page]') { -1 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(25)
         end
       end
@@ -50,8 +50,8 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
         before { create_list(:course_schedule_override, 26, course_schedule: course_schedule) }
         let(:'options[page]') { 2 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(1)
           expect(json['meta']['page']).to eq(2)
         end
@@ -61,8 +61,8 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
         before { create_list(:course_schedule_override, 26, course_schedule: course_schedule) }
         let(:'options[limit]') { 5 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(5)
         end
       end
@@ -72,8 +72,8 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
         let(:'options[page]') { 5 }
         let(:'options[limit]') { 10 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data']).to eq([])
           expect(json['meta']['page']).to eq(5)
           expect(json['meta']['last']).to eq(3)
@@ -84,15 +84,15 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
         before { create_list(:course_schedule_override, 26, course_schedule: course_schedule) }
         let(:'options[limit]') { -5 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data'].length).to eq(25)
         end
       end
 
       response '200', 'empty list' do
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data']).to eq([])
           expect(json['meta'].keys).to include('page', 'last', 'from', 'to', 'count', 'next')
         end
@@ -118,8 +118,8 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
       response '201', 'created' do
         let(:course_schedule_override) { attributes_for(:course_schedule_override).merge(course_schedule_id: course_schedule.id) }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data']['attributes'].keys).to contain_exactly('course_schedule_id', 'override_date', 'notes', 'status', 'schedule_json')
         end
       end
@@ -127,8 +127,8 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
       response '422', 'missing' do
         let(:course_schedule_override) { {} }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors']).to be_present
         end
       end
@@ -136,8 +136,8 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
       response '422', 'invalid' do
         let(:course_schedule_override) { { course_schedule_id: nil } }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors']).to be_present
         end
       end
@@ -153,9 +153,11 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
 
       response '404', 'not found' do
         let(:id) { -99 }
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors'][0]['title']).to eq('Not Found')
+          expect(json['errors'][0]['status']).to eq('404')
+          expect(json['errors'][0]['detail']).to match(/Couldn't find .+CourseScheduleOverride.+/)
         end
       end
 
@@ -163,8 +165,8 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
         let!(:record) { create(:course_schedule_override, course_schedule: course_schedule) }
         let(:id) { record.id }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['data']['id']).to eq(record.id.to_s)
           expect(json['data']['attributes'].keys).to contain_exactly('course_schedule_id', 'override_date', 'notes', 'status', 'schedule_json')
         end
@@ -182,7 +184,7 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
         let(:id) { record.id }
         let(:course_schedule_override) { { notes: 'New Note' } }
 
-        run_test! do |res|
+        run_test! do |response|
           record.reload
           expect(record.notes).to eq('New Note')
         end
@@ -192,9 +194,11 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
         let(:id) { -99 }
         let(:course_schedule_override) { { notes: 'New Note' } }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors'][0]['status']).to eq('404')
+          expect(json['errors'][0]['title']).to eq('Not Found')
+          expect(json['errors'][0]['detail']).to match(/Couldn't find .+CourseScheduleOverride.+/)
         end
       end
 
@@ -203,8 +207,8 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
         let(:id) { record.id }
         let(:course_schedule_override) { { notes: nil } }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
           expect(json['errors']).to be_present
         end
       end
@@ -217,7 +221,7 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
         let!(:record) { create(:course_schedule_override, course_schedule: course_schedule) }
         let(:id) { record.id }
 
-        run_test! do |res|
+        run_test! do |response|
           expect(Api::Course::CourseScheduleOverride.exists?(id)).to be_falsey
         end
       end
@@ -225,9 +229,11 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
       response '404', 'not found' do
         let(:id) { -99 }
 
-        run_test! do |res|
-          json = JSON.parse(res.body)
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['errors'][0]['title']).to eq('Not Found')
           expect(json['errors'][0]['status']).to eq('404')
+          expect(json['errors'][0]['detail']).to match(/Couldn't find .+CourseScheduleOverride.+/)
         end
       end
     end
