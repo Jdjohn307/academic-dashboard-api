@@ -1,0 +1,232 @@
+require 'swagger_helper'
+
+RSpec.describe 'Roles API', swagger_doc: 'v1/swagger.yaml', type: :request do
+  path '/api/users/roles' do
+    get 'List roles' do
+      tags 'Roles'
+      produces 'application/json'
+      parameter name: :'options[page]', in: :query, type: :integer, required: false
+      parameter name: :'options[limit]', in: :query, type: :integer, required: false
+
+      response '200', 'paginated list' do
+        before { create_list(:role, 26) }
+
+        let(:'options[page]')  { nil }
+        let(:'options[limit]') { nil }
+
+        run_test! do |res|
+          json = JSON.parse(res.body)
+          expect(json['data'].length).to eq(25)
+          expect(json['meta']['page']).to eq(1)
+          expect(json['meta']['count']).to eq(26)
+        end
+      end
+
+      response '200', 'page + limit' do
+        before { create_list(:role, 26) }
+        let(:'options[page]')  { 2 }
+        let(:'options[limit]') { 10 }
+
+        run_test! do |res|
+          json = JSON.parse(res.body)
+          expect(json['data'].length).to eq(10)
+          expect(json['meta']['page']).to eq(2)
+          expect(json['meta']['last']).to eq(3)
+        end
+      end
+
+      response '200', 'invalid page fallback' do
+        before { create_list(:role, 26) }
+        let(:'options[page]') { -1 }
+
+        run_test! do |res|
+          json = JSON.parse(res.body)
+          expect(json['data'].length).to eq(25)
+          expect(json['meta']['page']).to eq(1)
+        end
+      end
+
+      response '200', 'page only' do
+        before { create_list(:role, 26) }
+        let(:'options[page]') { 2 }
+
+        run_test! do |res|
+          json = JSON.parse(res.body)
+          expect(json['data'].length).to eq(1)
+          expect(json['meta']['page']).to eq(2)
+        end
+      end
+
+      response '200', 'limit only' do
+        before { create_list(:role, 26) }
+        let(:'options[limit]') { 5 }
+
+        run_test! do |res|
+          json = JSON.parse(res.body)
+          expect(json['data'].length).to eq(5)
+          expect(json['meta']['last']).to eq(6)
+        end
+      end
+
+      response '200', 'page beyond last' do
+        before { create_list(:role, 26) }
+        let(:'options[page]') { 5 }
+        let(:'options[limit]') { 10 }
+
+        run_test! do |res|
+          json = JSON.parse(res.body)
+          expect(json['data']).to eq([])
+          expect(json['meta']['page']).to eq(5)
+          expect(json['meta']['last']).to eq(3)
+        end
+      end
+
+      response '200', 'invalid limit' do
+        before { create_list(:role, 26) }
+        let(:'options[limit]') { -5 }
+
+        run_test! do |res|
+          json = JSON.parse(res.body)
+          expect(json['data'].length).to eq(25)
+          expect(json['meta']['page']).to eq(1)
+        end
+      end
+
+      response '200', 'empty list' do
+        run_test! do |res|
+          json = JSON.parse(res.body)
+          expect(json['data']).to eq([])
+          expect(json['meta'].keys).to include('page', 'last', 'from', 'to', 'count', 'next')
+        end
+      end
+    end
+
+    post 'Create role' do
+      tags 'Roles'
+      consumes 'application/json'
+      produces 'application/json'
+      parameter name: :role, in: :body, schema: {
+        type: :object,
+        properties: {
+          name: { type: :string },
+          status: { type: :string }
+        },
+        required: %w[name status]
+      }
+
+      response '201', 'created' do
+        let(:role) { attributes_for(:role) }
+
+        run_test! do |res|
+          json = JSON.parse(res.body)
+          expect(json['data']['attributes'].keys).to contain_exactly('name', 'status')
+        end
+      end
+
+      response '422', 'missing' do
+        let(:role) { {} }
+        run_test! do |res|
+          json = JSON.parse(res.body)
+          expect(json['errors']).to be_present
+        end
+      end
+
+      response '422', 'invalid' do
+        let(:role) { { name: nil } }
+        run_test! do |res|
+          json = JSON.parse(res.body)
+          expect(json['errors']).to be_present
+        end
+      end
+    end
+  end
+
+  path '/api/users/roles/{id}' do
+    parameter name: :id, in: :path, type: :string
+
+    get 'Show role' do
+      tags 'Roles'
+      produces 'application/json'
+
+      response '404', 'not found' do
+        let(:id) { -99 }
+        run_test! do |res|
+          json = JSON.parse(res.body)
+          expect(json['errors'][0]['title']).to eq('Not Found')
+        end
+      end
+
+      response '200', 'found' do
+        let!(:record) { create(:role) }
+        let(:id) { record.id }
+
+        run_test! do |res|
+          json = JSON.parse(res.body)
+          expect(json['data']['id']).to eq(record.id.to_s)
+          expect(json['data']['attributes'].keys).to contain_exactly('name', 'status')
+        end
+      end
+    end
+
+    patch 'Update role' do
+      tags 'Roles'
+      consumes 'application/json'
+      produces 'application/json'
+      parameter name: :role, in: :body, schema: { type: :object, properties: { name: { type: :string } } }
+
+      response '200', 'updated' do
+        let!(:record) { create(:role, name: 'Teacher') }
+        let(:id) { record.id }
+        let(:role) { { name: 'Admin' } }
+
+        run_test! do |_res|
+          record.reload
+          expect(record.name).to eq('Admin')
+        end
+      end
+
+      response '404', 'not found' do
+        let(:id) { -99 }
+        let(:role) { { name: 'Admin' } }
+
+        run_test! do |res|
+          json = JSON.parse(res.body)
+          expect(json['errors'][0]['status']).to eq('404')
+        end
+      end
+
+      response '422', 'invalid' do
+        let!(:record) { create(:role, name: 'Teacher') }
+        let(:id) { record.id }
+        let(:role) { { name: nil } }
+
+        run_test! do |res|
+          json = JSON.parse(res.body)
+          expect(json['errors']).to be_present
+        end
+      end
+    end
+
+    delete 'Delete role' do
+      tags 'Roles'
+
+      response '204', 'deleted' do
+        let!(:record) { create(:role) }
+        let(:id) { record.id }
+
+        run_test! do |_res|
+          expect(Api::Users::Role.exists?(id)).to be_falsey
+        end
+      end
+
+      response '404', 'not found' do
+        let(:id) { -99 }
+
+        run_test! do |res|
+          json = JSON.parse(res.body)
+          expect(json['errors'][0]['status']).to eq('404')
+        end
+      end
+    end
+  end
+end

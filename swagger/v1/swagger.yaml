@@ -4,35 +4,273 @@ info:
   title: API V1
   version: v1
 paths:
-  "/api/assignment/assignments":
+  "/api/assignment/assignment_grade_links":
     get:
-      summary: List assignments (paginated)
+      summary: List assignment grade links
       tags:
-      - Assignments
+      - Assignment Grade Links
       parameters:
-      - name: page
+      - name: options[page]
         in: query
         required: false
         schema:
           type: integer
-      - name: limit
+      - name: options[limit]
         in: query
         required: false
         schema:
           type: integer
       responses:
         '200':
-          description: assignments fetched
+          description: empty list
     post:
-      summary: Create an assignment
+      summary: Create assignment grade link
       tags:
-      - Assignments
+      - Assignment Grade Links
       parameters: []
       responses:
         '201':
-          description: assignment created
+          description: created
         '422':
-          description: invalid request
+          description: invalid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                assignment_id:
+                  type: integer
+                grade_id:
+                  type: integer
+                points:
+                  type: number
+                notes:
+                  type: string
+              required:
+              - assignment_id
+              - grade_id
+  "/api/assignment/assignment_grade_links/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    patch:
+      summary: Update assignment grade link
+      tags:
+      - Assignment Grade Links
+      parameters: []
+      responses:
+        '404':
+          description: not found
+        '200':
+          description: updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                points:
+                  type: number
+    delete:
+      summary: Delete assignment grade link
+      tags:
+      - Assignment Grade Links
+      responses:
+        '404':
+          description: not found
+        '204':
+          description: deleted
+  "/api/assignment/assignments":
+    get:
+      summary: List assignments
+      tags:
+      - Assignments
+      parameters:
+      - name: options[page]
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: options[limit]
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: empty list
+  "/api/assignment/assignments/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show assignment
+      tags:
+      - Assignments
+      responses:
+        '404':
+          description: not found
+        '200':
+          description: found assignment
+    patch:
+      summary: Update assignment
+      tags:
+      - Assignments
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+              required:
+              - title
+    delete:
+      summary: Delete assignment
+      tags:
+      - Assignments
+      responses:
+        '204':
+          description: deleted
+        '404':
+          description: not found
+  "/api/course/course_schedule_links":
+    get:
+      summary: List course schedule links
+      tags:
+      - Course Schedule Links
+      parameters:
+      - name: options[page]
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: options[limit]
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: empty list
+    post:
+      summary: Create course schedule link
+      tags:
+      - Course Schedule Links
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: invalid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                course_schedule_id:
+                  type: integer
+                status:
+                  type: string
+              required:
+              - user_id
+              - course_schedule_id
+  "/api/course/course_schedule_links/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show course schedule link
+      tags:
+      - Course Schedule Links
+      responses:
+        '404':
+          description: not found
+        '200':
+          description: found
+    patch:
+      summary: Update course schedule link
+      tags:
+      - Course Schedule Links
+      parameters: []
+      responses:
+        '200':
+          description: updated
+        '404':
+          description: not found
+        '422':
+          description: invalid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                user_id:
+                  type: integer
+    delete:
+      summary: Delete course schedule link
+      tags:
+      - Course Schedule Links
+      responses:
+        '204':
+          description: deleted
+        '404':
+          description: not found
+  "/api/course/course_schedule_overrides":
+    get:
+      summary: List course schedule overrides
+      tags:
+      - Course Schedule Overrides
+      parameters:
+      - name: options[page]
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: options[limit]
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: empty list
+    post:
+      summary: Create override
+      tags:
+      - Course Schedule Overrides
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: invalid
       requestBody:
         content:
           application/json:
@@ -41,66 +279,625 @@ paths:
               properties:
                 course_schedule_id:
                   type: integer
-                due_date:
+                override_date:
                   type: string
                   format: date
-                title:
+                notes:
                   type: string
-                description:
+                schedule_json:
                   type: string
-                  nullable: true
-                points_possible:
-                  type: integer
                 status:
                   type: string
               required:
               - course_schedule_id
-              - due_date
-              - title
-              - points_possible
+              - override_date
               - status
-  "/api/assignment/assignments/{id}":
+  "/api/course/course_schedule_overrides/{id}":
     parameters:
     - name: id
       in: path
       required: true
       schema:
-        type: integer
+        type: string
     get:
-      summary: Retrieve an assignment
+      summary: Show override
       tags:
-      - Assignments
+      - Course Schedule Overrides
       responses:
-        '200':
-          description: found
         '404':
           description: not found
+        '200':
+          description: found
     patch:
-      summary: Update an assignment
+      summary: Update override
       tags:
-      - Assignments
+      - Course Schedule Overrides
       parameters: []
       responses:
         '200':
           description: updated
-        '422':
-          description: invalid request
         '404':
           description: not found
+        '422':
+          description: invalid
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                title:
+                notes:
                   type: string
-                points_possible:
-                  type: integer
     delete:
-      summary: Delete an assignment
+      summary: Delete override
       tags:
-      - Assignments
+      - Course Schedule Overrides
+      responses:
+        '204':
+          description: deleted
+        '404':
+          description: not found
+  "/api/course/course_schedules":
+    get:
+      summary: List course schedules
+      tags:
+      - Course Schedules
+      parameters:
+      - name: options[page]
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: options[limit]
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: empty list
+    post:
+      summary: Create course schedule
+      tags:
+      - Course Schedules
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: invalid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                course_id:
+                  type: integer
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+                schedule_json:
+                  type: string
+                status:
+                  type: string
+              required:
+              - name
+              - course_id
+              - start_date
+              - end_date
+              - status
+  "/api/course/course_schedules/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show course schedule
+      tags:
+      - Course Schedules
+      responses:
+        '404':
+          description: not found
+        '200':
+          description: found
+    patch:
+      summary: Update course schedule
+      tags:
+      - Course Schedules
+      parameters: []
+      responses:
+        '200':
+          description: updated
+        '404':
+          description: not found
+        '422':
+          description: invalid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+    delete:
+      summary: Delete course schedule
+      tags:
+      - Course Schedules
+      responses:
+        '204':
+          description: deleted
+        '404':
+          description: not found
+  "/api/course/courses":
+    get:
+      summary: List courses
+      tags:
+      - Courses
+      parameters:
+      - name: options[page]
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: options[limit]
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: empty list
+    post:
+      summary: Create course
+      tags:
+      - Courses
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: invalid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                semester:
+                  type: string
+                year:
+                  type: integer
+                code:
+                  type: string
+                status:
+                  type: string
+              required:
+              - name
+              - semester
+              - year
+              - code
+              - status
+  "/api/course/courses/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show course
+      tags:
+      - Courses
+      responses:
+        '404':
+          description: not found
+        '200':
+          description: found
+    patch:
+      summary: Update course
+      tags:
+      - Courses
+      parameters: []
+      responses:
+        '200':
+          description: updated
+        '404':
+          description: not found
+        '422':
+          description: invalid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+    delete:
+      summary: Delete course
+      tags:
+      - Courses
+      responses:
+        '204':
+          description: deleted
+        '404':
+          description: not found
+  "/api/users/grades":
+    get:
+      summary: List grades
+      tags:
+      - Grades
+      parameters:
+      - name: options[page]
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: options[limit]
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: empty list
+    post:
+      summary: Create grade
+      tags:
+      - Grades
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: invalid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                final_grade:
+                  type: number
+                comments:
+                  type: string
+                status:
+                  type: string
+                course_id:
+                  type: integer
+                user_id:
+                  type: integer
+              required:
+              - final_grade
+              - course_id
+              - user_id
+              - status
+  "/api/users/grades/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show grade
+      tags:
+      - Grades
+      responses:
+        '404':
+          description: not found
+        '200':
+          description: found
+    patch:
+      summary: Update grade
+      tags:
+      - Grades
+      parameters: []
+      responses:
+        '200':
+          description: updated
+        '404':
+          description: not found
+        '422':
+          description: invalid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                final_grade:
+                  type: number
+    delete:
+      summary: Delete grade
+      tags:
+      - Grades
+      responses:
+        '204':
+          description: deleted
+        '404':
+          description: not found
+  "/api/users/roles":
+    get:
+      summary: List roles
+      tags:
+      - Roles
+      parameters:
+      - name: options[page]
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: options[limit]
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: empty list
+    post:
+      summary: Create role
+      tags:
+      - Roles
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: invalid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                status:
+                  type: string
+              required:
+              - name
+              - status
+  "/api/users/roles/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show role
+      tags:
+      - Roles
+      responses:
+        '404':
+          description: not found
+        '200':
+          description: found
+    patch:
+      summary: Update role
+      tags:
+      - Roles
+      parameters: []
+      responses:
+        '200':
+          description: updated
+        '404':
+          description: not found
+        '422':
+          description: invalid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+    delete:
+      summary: Delete role
+      tags:
+      - Roles
+      responses:
+        '204':
+          description: deleted
+        '404':
+          description: not found
+  "/api/users/user_role_links":
+    get:
+      summary: List user-role links
+      tags:
+      - User Role Links
+      parameters:
+      - name: options[page]
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: options[limit]
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: empty list
+    post:
+      summary: Create user-role link
+      tags:
+      - User Role Links
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: invalid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                role_id:
+                  type: integer
+                status:
+                  type: string
+              required:
+              - user_id
+              - role_id
+  "/api/users/user_role_links/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show user-role link
+      tags:
+      - User Role Links
+      responses:
+        '404':
+          description: not found
+        '200':
+          description: found
+    patch:
+      summary: Update user-role link
+      tags:
+      - User Role Links
+      parameters: []
+      responses:
+        '200':
+          description: updated
+        '404':
+          description: not found
+        '422':
+          description: invalid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role_id:
+                  type: integer
+                user_id:
+                  type: integer
+                status:
+                  type: string
+    delete:
+      summary: Delete user-role link
+      tags:
+      - User Role Links
+      responses:
+        '204':
+          description: deleted
+        '404':
+          description: not found
+  "/api/users/users":
+    get:
+      summary: List users
+      tags:
+      - Users
+      parameters:
+      - name: options[page]
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: options[limit]
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: empty list
+    post:
+      summary: Create user
+      tags:
+      - Users
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: invalid params
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                status:
+                  type: string
+              required:
+              - name
+              - email
+              - password
+              - status
+  "/api/users/users/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show user
+      tags:
+      - Users
+      responses:
+        '404':
+          description: not found
+        '200':
+          description: found
+    patch:
+      summary: Update user
+      tags:
+      - Users
+      parameters: []
+      responses:
+        '200':
+          description: updated
+        '404':
+          description: not found
+        '422':
+          description: invalid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                status:
+                  type: string
+    delete:
+      summary: Delete user
+      tags:
+      - Users
       responses:
         '204':
           description: deleted
