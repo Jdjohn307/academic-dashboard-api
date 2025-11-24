@@ -16,7 +16,7 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
 
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['data'].length).to eq(25)
+          expect(json.fetch('data').length).to eq(25)
           expect(json['meta']['page']).to eq(1)
           expect(json['meta']['count']).to eq(26)
           expect(json['meta']['next']).to eq(2)
@@ -33,7 +33,7 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
 
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['data'].length).to eq(10)
+          expect(json.fetch('data').length).to eq(10)
           expect(json['meta']['page']).to eq(2)
           expect(json['meta']['count']).to eq(26)
           expect(json['meta']['next']).to eq(3)
@@ -49,7 +49,7 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
 
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['data'].length).to eq(25)
+          expect(json.fetch('data').length).to eq(25)
           expect(json['meta']['page']).to eq(1)
         end
       end
@@ -60,7 +60,7 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
 
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['data'].length).to eq(1)
+          expect(json.fetch('data').length).to eq(1)
           expect(json['meta']['page']).to eq(2)
           expect(json['meta']['from']).to eq(26)
           expect(json['meta']['to']).to eq(26)
@@ -75,7 +75,7 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
 
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['data'].length).to eq(5)
+          expect(json.fetch('data').length).to eq(5)
           expect(json['meta']['page']).to eq(1)
           expect(json['meta']['last']).to eq(6)
         end
@@ -100,7 +100,7 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
 
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['data'].length).to eq(25)
+          expect(json.fetch('data').length).to eq(25)
           expect(json['meta']['page']).to eq(1)
         end
       end

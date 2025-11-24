@@ -3,12 +3,13 @@ module Api
     class RegistrationsController < BaseController
       # POST /api/users/auth/register
       def create
-        # ensure confirmation matches — raise RecordInvalid for consistency
-        if params[:password] != params[:password_confirmation]
-          raise ActiveRecord::RecordInvalid.new(User.new.tap { |u| u.errors.add(:password_confirmation, "does not match") })
+        user = User.new(user_params.merge(status: "active"))
+
+        unless params[:password] == params[:password_confirmation]
+          user.errors.add(:password_confirmation, "does not match")
+          raise ActiveRecord::RecordInvalid.new(user)
         end
 
-        user = User.new(user_params.merge(status: "active"))
         user.save! # will raise RecordInvalid and be caught by BaseController
 
         token = JsonWebToken.encode({ user_id: user.id })

@@ -22,7 +22,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
 
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['data'].length).to eq(25)
+          expect(json.fetch('data').length).to eq(25)
           expect(json['meta']['page']).to eq(1)
           expect(json['meta']['count']).to eq(26)
           expect(json['meta']['next']).to eq(2)
@@ -42,7 +42,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
 
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['data'].length).to eq(10)
+          expect(json.fetch('data').length).to eq(10)
           expect(json['meta']['page']).to eq(2)
           expect(json['meta']['count']).to eq(26)
           expect(json['meta']['next']).to eq(3)
@@ -62,7 +62,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
 
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['data'].length).to eq(25)
+          expect(json.fetch('data').length).to eq(25)
           expect(json['meta']['page']).to eq(1)
           expect(json['meta']['count']).to eq(26)
           expect(json['meta']['next']).to eq(2)
@@ -83,7 +83,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(response.status).to eq(200)
-          expect(json['data'].length).to eq(1)
+          expect(json.fetch('data').length).to eq(1)
           expect(json['meta']['page']).to eq(2)
           expect(json['meta']['count']).to eq(26)
           expect(json['meta']['next']).to eq(nil)
@@ -104,7 +104,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(response.status).to eq(200)
-          expect(json['data'].length).to eq(5)
+          expect(json.fetch('data').length).to eq(5)
           expect(json['meta']['page']).to eq(1)
           expect(json['meta']['count']).to eq(26)
           expect(json['meta']['next']).to eq(2)

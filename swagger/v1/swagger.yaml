@@ -57,6 +57,15 @@ paths:
       required: true
       schema:
         type: string
+    get:
+      summary: Show assignment grade link
+      tags:
+      - Assignment Grade Links
+      responses:
+        '404':
+          description: not found
+        '200':
+          description: found
     patch:
       summary: Update assignment grade link
       tags:
@@ -103,6 +112,41 @@ paths:
       responses:
         '200':
           description: empty list
+    post:
+      summary: Create assignment
+      tags:
+      - Assignments
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: invalid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                course_schedule_id:
+                  type: integer
+                due_date:
+                  type: string
+                  format: date_time
+                title:
+                  type: string
+                description:
+                  type: string
+                points_possible:
+                  type: number
+                status:
+                  type: string
+              required:
+              - course_schedule_id
+              - due_date
+              - title
+              - points_possible
+              - status
   "/api/assignment/assignments/{id}":
     parameters:
     - name: id
@@ -132,6 +176,8 @@ paths:
       responses:
         '200':
           description: updated
+        '404':
+          description: not found
       requestBody:
         content:
           application/json:
@@ -628,6 +674,36 @@ paths:
           description: deleted
         '404':
           description: not found
+  "/api/users/auth/register":
+    post:
+      summary: Register User
+      tags:
+      - Authentication
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: validation error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              - email
+              - password
+              - password_confirmation
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
   "/api/users/roles":
     get:
       summary: List roles
@@ -715,6 +791,40 @@ paths:
           description: deleted
         '404':
           description: not found
+  "/api/users/auth/login":
+    post:
+      summary: User Login
+      tags:
+      - Authentication
+      parameters: []
+      responses:
+        '200':
+          description: successful login
+        '401':
+          description: invalid login
+        '403':
+          description: inactive user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - email
+              - password
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+  "/api/users/auth/logout":
+    post:
+      summary: Logout User
+      tags:
+      - Authentication
+      responses:
+        '200':
+          description: logged out
   "/api/users/user_role_links":
     get:
       summary: List user-role links
@@ -836,7 +946,7 @@ paths:
         '201':
           description: created
         '422':
-          description: invalid params
+          description: invalid
       requestBody:
         content:
           application/json:

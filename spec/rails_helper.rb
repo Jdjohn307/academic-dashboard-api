@@ -17,6 +17,8 @@ end
 
 RSpec.configure do |config|
   config.fixture_paths = [ Rails.root.join('spec/fixtures') ]
+  Dir[Rails.root.join("spec/support/**/*.rb")].each { |file| require file }
+
 
   # Disable transactional fixtures - we are using Database Cleaner instead
   config.use_transactional_fixtures = false

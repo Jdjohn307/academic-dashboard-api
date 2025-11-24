@@ -5,7 +5,7 @@ module Api
 
       # GET /api/users/users
       def index
-        render_paginated(User.all, permit_options[:options] || {})
+        render_paginated(User.all, permit_options)
       end
 
       # GET /api/users/users/:id

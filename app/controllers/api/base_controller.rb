@@ -75,7 +75,7 @@ module Api
 
     # Before actions
     def permit_options
-      params.permit(options: [ :page, :limit ]) if respond_to?(:index)
+      params.fetch(:options, {}).permit(:page, :limit)
     end
 
     def authorize_request
@@ -87,6 +87,8 @@ module Api
       raise UnauthorizedError, "Invalid or expired token" unless decoded
 
       @current_user = Api::Users::User.find(decoded[:user_id])
+    rescue ActiveRecord::RecordNotFound
+      raise UnauthorizedError, "Invalid token"
     end
 
     # Rescue handlers

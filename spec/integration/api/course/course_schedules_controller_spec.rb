@@ -17,7 +17,7 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
 
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['data'].length).to eq(25)
+          expect(json.fetch('data').length).to eq(25)
           expect(json['meta']['page']).to eq(1)
           expect(json['meta']['count']).to eq(26)
         end
@@ -30,7 +30,7 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
 
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['data'].length).to eq(10)
+          expect(json.fetch('data').length).to eq(10)
           expect(json['meta']['page']).to eq(2)
           expect(json['meta']['last']).to eq(3)
         end
@@ -42,7 +42,7 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
 
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['data'].length).to eq(25)
+          expect(json.fetch('data').length).to eq(25)
           expect(json['meta']['page']).to eq(1)
         end
       end
@@ -53,7 +53,7 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
 
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['data'].length).to eq(1)
+          expect(json.fetch('data').length).to eq(1)
           expect(json['meta']['page']).to eq(2)
         end
       end
@@ -64,7 +64,7 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
 
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['data'].length).to eq(5)
+          expect(json.fetch('data').length).to eq(5)
           expect(json['meta']['last']).to eq(6)
         end
       end
@@ -88,7 +88,7 @@ RSpec.describe 'Course Schedules API', swagger_doc: 'v1/swagger.yaml', type: :re
 
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['data'].length).to eq(25)
+          expect(json.fetch('data').length).to eq(25)
           expect(json['meta']['page']).to eq(1)
         end
       end
