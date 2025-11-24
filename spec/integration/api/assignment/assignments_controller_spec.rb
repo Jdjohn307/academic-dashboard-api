@@ -1,10 +1,19 @@
 require 'swagger_helper'
 
 RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request do
+  # Setup User Authentication
+  let!(:user) { create(:user, password: "Password123!", password_confirmation: "Password123!") }
+  let(:auth_headers) { auth_header_for(user) }
+
   let!(:course) { create(:course) }
   let!(:course_schedule) { create(:course_schedule, course: course) }
 
   path '/api/assignment/assignments' do
+    parameter name: 'Authorization',
+                in: :header,
+                type: :string,
+                required: true
+
     get 'List assignments' do
       tags 'Assignments'
       produces 'application/json'
@@ -15,6 +24,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
       response '200', 'assignments listed default pagination' do
         let(:'options[page]')  { nil }
         let(:'options[limit]') { nil }
+        let(:Authorization) { auth_headers["Authorization"] }
 
         before do
           create_list(:assignment, 26, course_schedule: course_schedule)
@@ -35,6 +45,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
       response '200', 'assignments listed with page + limit' do
         let(:'options[page]')  { 2 }
         let(:'options[limit]') { 10 }
+        let(:Authorization) { auth_headers["Authorization"] }
 
         before do
           create_list(:assignment, 26, course_schedule: course_schedule)
@@ -55,6 +66,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
       response '200', 'invalid page falls back to 1' do
         let(:'options[page]')  { -1 }
         let(:'options[limit]') { nil }
+        let(:Authorization) { auth_headers["Authorization"] }
 
         before do
           create_list(:assignment, 26, course_schedule: course_schedule)
@@ -75,6 +87,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
       response '200', 'page param only' do
         let(:'options[page]')  { 2 }
         let(:'options[limit]') { nil }
+        let(:Authorization) { auth_headers["Authorization"] }
 
         before do
           create_list(:assignment, 26, course_schedule: course_schedule)
@@ -96,6 +109,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
       response '200', 'limit only' do
         let(:'options[page]')  { nil }
         let(:'options[limit]') { 5 }
+        let(:Authorization) { auth_headers["Authorization"] }
 
         before do
           create_list(:assignment, 26, course_schedule: course_schedule)
@@ -117,6 +131,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
       response '200', 'page beyond last returns empty data' do
         let(:'options[page]')  { 5 }
         let(:'options[limit]') { 10 }
+        let(:Authorization) { auth_headers["Authorization"] }
 
         before do
           create_list(:assignment, 26, course_schedule: course_schedule)
@@ -133,11 +148,24 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
       response '200', 'empty list' do
         let(:'options[page]')  { nil }
         let(:'options[limit]') { nil }
+        let(:Authorization) { auth_headers["Authorization"] }
 
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['data']).to eq([])
           expect(json['meta'].keys).to include('page', 'last', 'from', 'to', 'count', 'next')
+        end
+      end
+
+      response '401', 'unauthorized' do
+        let(:'options[page]')  { nil }
+        let(:'options[limit]') { nil }
+        let(:Authorization) { nil }
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['errors'][0]['status']).to eq('401')
+          expect(json['errors'][0]['title']).to eq('Unauthorized')
+          expect(json['errors'][0]['detail']).to match(/Invalid or expired token/)
         end
       end
     end
@@ -161,6 +189,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
 
       response '201', 'created' do
         let(:assignment) { attributes_for(:assignment).merge(course_schedule_id: course_schedule.id) }
+        let(:Authorization) { auth_headers["Authorization"] }
 
         run_test! do |response|
           json = JSON.parse(response.body)
@@ -170,6 +199,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
 
       response '422', 'missing' do
         let(:assignment) { {} }
+        let(:Authorization) { auth_headers["Authorization"] }
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['errors']).to be_present
@@ -178,6 +208,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
 
       response '422', 'invalid' do
         let(:assignment) { attributes_for(:assignment, course_schedule_id: nil) }
+        let(:Authorization) { auth_headers["Authorization"] }
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['errors'][0]['status']).to eq('422')
@@ -185,11 +216,26 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
           expect(json['errors'][0]['detail']).to match(/Course schedule can't be blank/)
         end
       end
+
+      response '401', 'unauthorized' do
+        let(:assignment) { attributes_for(:assignment).merge(course_schedule_id: course_schedule.id) }
+        let(:Authorization) { nil }
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['errors'][0]['status']).to eq('401')
+          expect(json['errors'][0]['title']).to eq('Unauthorized')
+          expect(json['errors'][0]['detail']).to match(/Invalid or expired token/)
+        end
+      end
     end
   end
 
   path '/api/assignment/assignments/{id}' do
     parameter name: :id, in: :path, type: :string, required: true
+    parameter name: 'Authorization',
+              in: :header,
+              type: :string,
+              required: true
 
     get 'Show assignment' do
       tags 'Assignments'
@@ -197,6 +243,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
 
       response '404', 'not found' do
         let(:id) { -99 }
+        let(:Authorization) { auth_headers["Authorization"] }
 
         run_test! do |response|
           json = JSON.parse(response.body)
@@ -210,6 +257,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
       response '200', 'found assignment' do
         let(:assignment) { create(:assignment, course_schedule: course_schedule) }
         let(:id) { assignment.id }
+        let(:Authorization) { auth_headers["Authorization"] }
 
         run_test! do |response|
           json = JSON.parse(response.body)
@@ -218,6 +266,19 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
             'course_schedule_id', 'due_date', 'title',
             'description', 'points_possible', 'status'
           )
+        end
+      end
+
+      response '401', 'unauthorized' do
+        let(:assignment) { create(:assignment, course_schedule: course_schedule) }
+        let(:id) { assignment.id }
+        let(:Authorization) { nil }
+
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['errors'][0]['status']).to eq('401')
+          expect(json['errors'][0]['title']).to eq('Unauthorized')
+          expect(json['errors'][0]['detail']).to match(/Invalid or expired token/)
         end
       end
     end
@@ -240,6 +301,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
         let(:assignment_record) { create(:assignment, course_schedule: course_schedule) }
         let(:id) { assignment_record.id }
         let(:assignment) { { title: 'New Title' } }
+        let(:Authorization) { auth_headers["Authorization"] }
 
         run_test! do |response|
           assignment_record.reload
@@ -255,12 +317,41 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
       response '404', 'not found' do
         let(:id) { -99 }
         let(:assignment) { { title: 'New Title' } }
+        let(:Authorization) { auth_headers["Authorization"] }
 
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['errors'][0]['title']).to eq('Not Found')
           expect(json['errors'][0]['status']).to eq('404')
           expect(json['errors'][0]['detail']).to match(/Couldn't find .+Assignment.+/)
+        end
+      end
+
+      response '422', 'invalid' do
+        let(:assignment_record) { create(:assignment, course_schedule: course_schedule) }
+        let(:id) { assignment_record.id }
+        let(:assignment) { { title: nil } }
+        let(:Authorization) { auth_headers["Authorization"] }
+
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['errors'][0]['status']).to eq('422')
+          expect(json['errors'][0]['title']).to eq('Unprocessable Entity')
+          expect(json['errors'][0]['detail']).to match(/Title can't be blank/)
+        end
+      end
+
+      response '401', 'unauthorized' do
+        let(:assignment_record) { create(:assignment, course_schedule: course_schedule) }
+        let(:id) { assignment_record.id }
+        let(:assignment) { { title: 'New Title' } }
+        let(:Authorization) { nil }
+
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['errors'][0]['status']).to eq('401')
+          expect(json['errors'][0]['title']).to eq('Unauthorized')
+          expect(json['errors'][0]['detail']).to match(/Invalid or expired token/)
         end
       end
     end
@@ -272,6 +363,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
       response '204', 'deleted' do
         let(:assignment) { create(:assignment, course_schedule: course_schedule) }
         let(:id) { assignment.id }
+        let(:Authorization) { auth_headers["Authorization"] }
 
         run_test! do
           expect(Api::Assignment::Assignment.exists?(id)).to be(false)
@@ -280,6 +372,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
 
       response '404', 'not found' do
         let(:id) { -99 }
+        let(:Authorization) { auth_headers["Authorization"] }
 
         run_test! do |response|
           json = JSON.parse(response.body)

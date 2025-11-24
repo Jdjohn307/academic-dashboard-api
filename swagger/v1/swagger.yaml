@@ -94,6 +94,12 @@ paths:
         '204':
           description: deleted
   "/api/assignment/assignments":
+    parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     get:
       summary: List assignments
       tags:
@@ -112,6 +118,8 @@ paths:
       responses:
         '200':
           description: empty list
+        '401':
+          description: unauthorized
     post:
       summary: Create assignment
       tags:
@@ -122,6 +130,8 @@ paths:
           description: created
         '422':
           description: invalid
+        '401':
+          description: unauthorized
       requestBody:
         content:
           application/json:
@@ -154,6 +164,11 @@ paths:
       required: true
       schema:
         type: string
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     get:
       summary: Show assignment
       tags:
@@ -163,6 +178,8 @@ paths:
           description: not found
         '200':
           description: found assignment
+        '401':
+          description: unauthorized
     patch:
       summary: Update assignment
       tags:
@@ -178,6 +195,10 @@ paths:
           description: updated
         '404':
           description: not found
+        '422':
+          description: invalid
+        '401':
+          description: unauthorized
       requestBody:
         content:
           application/json:

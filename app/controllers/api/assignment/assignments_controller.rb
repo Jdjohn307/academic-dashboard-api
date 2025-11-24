@@ -3,6 +3,8 @@ module Api
     class AssignmentsController < BaseController
       before_action :set_assignment, only: [ :show, :update, :destroy ]
 
+      before_action :authorize_request
+
       # GET /api/assignment/assignments
       def index
         render_paginated(Assignment.all, permit_options)
