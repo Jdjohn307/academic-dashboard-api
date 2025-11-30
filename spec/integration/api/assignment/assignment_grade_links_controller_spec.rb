@@ -156,7 +156,7 @@ RSpec.describe 'Assignment Grade Links API', swagger_doc: 'v1/swagger.yaml', typ
         end
       end
 
-      response '422', 'invalid' do
+      response '422', 'unprocessable' do
         let(:assignment_grade_link) { {} }
 
         run_test! do |response|

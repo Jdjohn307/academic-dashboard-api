@@ -133,7 +133,7 @@ RSpec.describe 'Grades API', swagger_doc: 'v1/swagger.yaml', type: :request do
         end
       end
 
-      response '422', 'invalid' do
+      response '422', 'unprocessable' do
         let(:grade_record) { { user_id: nil, course_id: nil } }
         run_test! do |response|
           json = JSON.parse(response.body)
@@ -208,7 +208,7 @@ RSpec.describe 'Grades API', swagger_doc: 'v1/swagger.yaml', type: :request do
         end
       end
 
-      response '422', 'invalid' do
+      response '422', 'unprocessable' do
         let!(:record) { create(:grade_record, user: user, course: course, final_grade: 85.0) }
         let(:id) { record.id }
         let(:grade_record) { { final_grade: -1 } }

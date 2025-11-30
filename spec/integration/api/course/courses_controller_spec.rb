@@ -141,7 +141,7 @@ RSpec.describe 'Courses API', swagger_doc: 'v1/swagger.yaml', type: :request do
         end
       end
 
-      response '422', 'invalid' do
+      response '422', 'unprocessable' do
         let(:course) { { name: nil } }
 
         run_test! do |response|
@@ -218,7 +218,7 @@ RSpec.describe 'Courses API', swagger_doc: 'v1/swagger.yaml', type: :request do
         end
       end
 
-      response '422', 'invalid' do
+      response '422', 'unprocessable' do
         let!(:record) { create(:course, name: 'Old Name') }
         let(:id) { record.id }
         let(:course) { { name: nil } }

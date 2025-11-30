@@ -130,7 +130,7 @@ RSpec.describe 'User Role Links API', swagger_doc: 'v1/swagger.yaml', type: :req
         end
       end
 
-      response '422', 'invalid' do
+      response '422', 'unprocessable' do
         let(:user_role_link) { { user_id: nil } }
         run_test! do |response|
           json = JSON.parse(response.body)
@@ -207,7 +207,7 @@ RSpec.describe 'User Role Links API', swagger_doc: 'v1/swagger.yaml', type: :req
         end
       end
 
-      response '422', 'invalid' do
+      response '422', 'unprocessable' do
         let!(:link) { create(:user_role_link, user: user, role: role) }
         let(:id) { link.id }
         let(:user_role_link) { { user_id: nil } }

@@ -153,7 +153,7 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
         end
       end
 
-      response '422', 'invalid' do
+      response '422', 'unprocessable' do
         let(:user) { attributes_for(:user, :user_invalid_status) }
         run_test! do |response|
           json = JSON.parse(response.body)
@@ -230,7 +230,7 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
         end
       end
 
-      response '422', 'invalid' do
+      response '422', 'unprocessable' do
         let!(:record_user) { create(:user, name: 'Old Name') }
         let(:id) { record_user.id }
         let(:user) { { status: 'banana' } }

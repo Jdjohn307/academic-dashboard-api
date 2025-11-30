@@ -133,7 +133,7 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
         end
       end
 
-      response '422', 'invalid' do
+      response '422', 'unprocessable' do
         let(:course_schedule_override) { { course_schedule_id: nil } }
 
         run_test! do |response|
@@ -202,7 +202,7 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
         end
       end
 
-      response '422', 'invalid' do
+      response '422', 'unprocessable' do
         let!(:record) { create(:course_schedule_override, course_schedule: course_schedule) }
         let(:id) { record.id }
         let(:course_schedule_override) { { notes: nil } }

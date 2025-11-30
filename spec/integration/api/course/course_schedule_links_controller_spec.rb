@@ -131,7 +131,7 @@ RSpec.describe 'Course Schedule Links API', swagger_doc: 'v1/swagger.yaml', type
         end
       end
 
-      response '422', 'invalid' do
+      response '422', 'unprocessable' do
         let(:course_schedule_link) { { user_id: nil } }
 
         run_test! do |response|
@@ -200,7 +200,7 @@ RSpec.describe 'Course Schedule Links API', swagger_doc: 'v1/swagger.yaml', type
         end
       end
 
-      response '422', 'invalid' do
+      response '422', 'unprocessable' do
         let!(:link) { create(:course_schedule_link, user: user, course_schedule: course_schedule) }
         let(:id) { link.id }
         let(:course_schedule_link) { { user_id: nil } }

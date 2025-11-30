@@ -131,7 +131,7 @@ RSpec.describe 'Roles API', swagger_doc: 'v1/swagger.yaml', type: :request do
         end
       end
 
-      response '422', 'invalid' do
+      response '422', 'unprocessable' do
         let(:role) { { name: nil } }
         run_test! do |response|
           json = JSON.parse(response.body)
@@ -202,7 +202,7 @@ RSpec.describe 'Roles API', swagger_doc: 'v1/swagger.yaml', type: :request do
         end
       end
 
-      response '422', 'invalid' do
+      response '422', 'unprocessable' do
         let!(:record) { create(:role, name: 'Teacher') }
         let(:id) { record.id }
         let(:role) { { name: nil } }

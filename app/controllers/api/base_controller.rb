@@ -91,6 +91,20 @@ module Api
       raise UnauthorizedError, "Invalid token"
     end
 
+    def current_user_roles
+      @current_user.user_role_links.includes(:role).map { |link| link.role.name }
+    end
+
+    def current_user_has_role?(*required_roles)
+      (current_user_roles & required_roles.map(&:to_s)).any?
+    end
+
+    def authorize_roles!(*required_roles)
+      unless current_user_has_role?(*required_roles)
+        raise ForbiddenError, "You do not have permission to perform this action"
+      end
+    end
+
     # Rescue handlers
     def render_not_found(exception)
       model_name = exception.model rescue nil
