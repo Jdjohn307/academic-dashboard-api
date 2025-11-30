@@ -15,7 +15,7 @@ module Api
         less_than_or_equal_to: ->(course_schedule_override) { course_schedule_override.course_schedule&.end_date }
       }
       validates :status, inclusion: {
-        in: [ "active", "inactive", "archived" ],
+        in: COURSE_SCHEDULE_OVERRIDE_STATUSES,
         message: "%{value} is not a valid status"
       }
       validate :schedule_json_is_valid

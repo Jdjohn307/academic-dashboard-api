@@ -8,9 +8,15 @@ module Api
       # Validation
       validates :name, presence: true, length: { maximum: 100 }
       validates :email, presence: true, length: { maximum: 255 }, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
-      validates :password, length: { minimum: 8 }, if: -> { password.present? }
+      validates :password, 
+        length: { minimum: 12, maximum: 72 },
+        format: { 
+          with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+          message: "must include uppercase, lowercase, and number"
+        },
+        if: :password_digest_changed?
       validates :status, inclusion: {
-        in: [ "active", "inactive", "archived" ],
+        in: USER_STATUSES,
         message: "%{value} is not a valid status"
       }
 

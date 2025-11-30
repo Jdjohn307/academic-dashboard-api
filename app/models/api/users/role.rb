@@ -6,7 +6,7 @@ module Api
       # Validation
       validates :name, presence: true, length: { maximum: 100 }
       validates :status, inclusion: {
-        in: [ "active", "inactive", "archived" ],
+        in: ROLE_STATUSES,
         message: "%{value} is not a valid status"
       }
 

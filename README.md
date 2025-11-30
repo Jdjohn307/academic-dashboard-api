@@ -25,7 +25,14 @@ Backend API for the Academic Dashboard application, built with Rails 8 and Postg
   bundle install
 ```
 
-3. Create and migrate the database:
+3. Generate Secret Key:
+```
+  # In Rails console:
+  require 'securerandom'
+  SecureRandom.hex(64)
+```
+
+4. Create and migrate the database:
 ```bash
   bin/rails db:create
   bin/rails db:migrate

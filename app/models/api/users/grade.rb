@@ -12,7 +12,7 @@ module Api
         too_long: "%{count} characters is the maximum allowed"
       }, allow_nil: true
       validates :status, inclusion: {
-        in: [ "active", "inactive", "posted", "archived" ],
+        in: GRADE_STATUSES,
         message: "%{value} is not a valid status"
       }, allow_nil: true
 

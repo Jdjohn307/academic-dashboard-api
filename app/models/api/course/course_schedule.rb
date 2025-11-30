@@ -15,7 +15,7 @@ module Api
         greater_than_or_equal_to: :start_date
       }
       validates :status, inclusion: {
-        in: [ "active", "complete", "hold", "archived" ],
+        in: COURSE_SCHEDULE_STATUSES,
         message: "%{value} is not a valid status"
       }
       validate :schedule_json_is_valid

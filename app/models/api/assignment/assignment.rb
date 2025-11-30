@@ -21,7 +21,7 @@ module Api
       }
 
       validates :status, inclusion: {
-        in: [ "active", "inactive", "draft", "published", "archived" ],
+        in: ASSIGNMENT_STATUSES,
         message: "%{value} is not a valid status"
       }
 

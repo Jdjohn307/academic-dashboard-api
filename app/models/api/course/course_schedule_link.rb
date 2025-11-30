@@ -10,7 +10,7 @@ module Api
         greater_than_or_equal_to: 0, only_integer: true
       }
       validates :status, inclusion: {
-        in: [ "active", "inactive", "completed", "hold", "archived" ],
+        in: COURSE_SCHEDULE_LINK_STATUSES,
         message: "%{value} is not a valid status"
       }
 

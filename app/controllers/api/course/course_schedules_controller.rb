@@ -23,7 +23,7 @@ module Api
         if course_schedule_record.save
           render jsonapi: course_schedule_record, status: :created
         else
-          render json: { errors: course_schedule_record.errors.full_messages.map { |msg| { title: "Invalid Data", detail: msg, status: "unprocessable_entity" } } }, status: :unprocessable_content
+          render_unprocessable_entity(course_schedule_record)
         end
       end
 

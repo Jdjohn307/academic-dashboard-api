@@ -19,7 +19,7 @@ module Api
         too_long: "%{count} characters is the maximum allowed"
       }
       validates :status, inclusion: {
-        in: [ "active", "inactive", "archived" ],
+        in: COURSE_STATUSES,
         message: "%{value} is not a valid status"
       }
 

@@ -15,7 +15,7 @@ module Api
         allow_nil: true
       }
       validates :status, inclusion: {
-        in: [ "active", "inactive", "submitted", "graded", "archived" ],
+        in: ASSIGNMENT_GRADE_LINK_STATUSES,
         message: "%{value} is not a valid status"
       }
       validates :feedback, length: {

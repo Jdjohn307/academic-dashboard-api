@@ -19,7 +19,7 @@ RSpec.describe "User Registration API", swagger_doc: "v1/swagger.yaml", type: :r
       }
 
       response(201, "created") do
-        let(:user) { { name: "New User", email: "new@example.com", password: "Password123", password_confirmation: "Password123" } }
+        let(:user) { { name: "New User", email: "new@example.com", password: "Password123!", password_confirmation: "Password123!" } }
 
         run_test! do |response|
           json = JSON.parse(response.body)
@@ -52,7 +52,7 @@ RSpec.describe "User Registration API", swagger_doc: "v1/swagger.yaml", type: :r
 
         context "email already taken" do
           before { create(:user, email: "taken@example.com") }
-          let(:user) { { name: "Test", email: "taken@example.com", password: "Password123", password_confirmation: "Password123" } }
+          let(:user) { { name: "Test", email: "taken@example.com", password: "Password123!", password_confirmation: "Password123!" } }
 
           run_test! do |response|
             json = JSON.parse(response.body)

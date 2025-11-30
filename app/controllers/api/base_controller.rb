@@ -80,19 +80,21 @@ module Api
 
     def authorize_request
       header = request.headers["Authorization"]
-      token = header.to_s.split(" ").last
-
+      raise UnauthorizedError, "Missing authorization header" unless header
+      
+      token = header.split(" ").last
       decoded = JsonWebToken.decode(token)
-
       raise UnauthorizedError, "Invalid or expired token" unless decoded
 
       @current_user = Api::Users::User.find(decoded[:user_id])
     rescue ActiveRecord::RecordNotFound
       raise UnauthorizedError, "Invalid token"
+    rescue JWT::DecodeError => e
+      raise UnauthorizedError, "Malformed token"
     end
 
     def current_user_roles
-      @current_user.user_role_links.includes(:role).map { |link| link.role.name }
+      @current_user_roles ||= @current_user.user_role_links.includes(:role).map { |link| link.role.name }
     end
 
     def current_user_has_role?(*required_roles)
@@ -133,7 +135,7 @@ module Api
     end
 
     def render_unprocessable_entity(exception)
-      record = exception.record
+      record = exception.is_a?(ActiveRecord::Base) ? exception : exception.record
       errors = record.errors.map do |error|
         jsonapi_error(
           error.full_message,

@@ -116,12 +116,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_21_184340) do
     t.index ["id"], name: "index_role_on_id"
   end
 
-  create_table "test_tables", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "user", force: :cascade do |t|
     t.string "name", null: false
     t.string "email", null: false

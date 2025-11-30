@@ -1,8 +1,8 @@
 require 'swagger_helper'
 
 RSpec.describe "User Login API", swagger_doc: "v1/swagger.yaml", type: :request do
-  let!(:active_user) { create(:user, email: "test@example.com", password: "Password123", password_confirmation: "Password123", status: "active") }
-  let!(:inactive_user) { create(:user, email: "inactive@example.com", password: "Password123", password_confirmation: "Password123", status: "inactive") }
+  let!(:active_user) { create(:user, email: "test@example.com", password: "Password123!", password_confirmation: "Password123!", status: "active") }
+  let!(:inactive_user) { create(:user, email: "inactive@example.com", password: "Password123!", password_confirmation: "Password123!", status: "inactive") }
 
   path "/api/users/auth/login" do
     post("User Login") do
@@ -20,7 +20,7 @@ RSpec.describe "User Login API", swagger_doc: "v1/swagger.yaml", type: :request 
       }
 
       response(200, "successful login") do
-        let(:credentials) { { email: "test@example.com", password: "Password123" } }
+        let(:credentials) { { email: "test@example.com", password: "Password123!" } }
 
         run_test! do |response|
           json = JSON.parse(response.body)
@@ -36,13 +36,13 @@ RSpec.describe "User Login API", swagger_doc: "v1/swagger.yaml", type: :request 
         end
 
         context "wrong email" do
-          let(:credentials) { { email: "wrong@example.com", password: "Password123" } }
+          let(:credentials) { { email: "wrong@example.com", password: "Password123!" } }
           run_test!
         end
       end
 
       response(403, "inactive user") do
-        let(:credentials) { { email: "inactive@example.com", password: "Password123" } }
+        let(:credentials) { { email: "inactive@example.com", password: "Password123!" } }
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json["errors"].first["status"]).to eq("403")

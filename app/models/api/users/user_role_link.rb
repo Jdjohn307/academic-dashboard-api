@@ -7,7 +7,7 @@ module Api
       validates :user_id, presence: true, numericality: { greater_than_or_equal_to: 0, only_integer: true }
       validates :role_id, presence: true, numericality: { greater_than_or_equal_to: 0, only_integer: true }
       validates :status, inclusion: {
-        in: [ "active", "inactive", "archived" ],
+        in: USER_ROLE_LINK_STATUSES,
         message: "%{value} is not a valid status"
       }
 
