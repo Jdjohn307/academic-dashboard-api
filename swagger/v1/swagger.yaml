@@ -559,6 +559,12 @@ paths:
         '404':
           description: not found
   "/api/course/courses":
+    parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     get:
       summary: List courses
       tags:
@@ -576,7 +582,9 @@ paths:
           type: integer
       responses:
         '200':
-          description: empty list
+          description: ok
+        '401':
+          description: unauthorized
     post:
       summary: Create course
       tags:
@@ -611,6 +619,11 @@ paths:
               - status
   "/api/course/courses/{id}":
     parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     - name: id
       in: path
       required: true
