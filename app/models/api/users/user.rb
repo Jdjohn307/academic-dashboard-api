@@ -11,7 +11,7 @@ module Api
       validates :password,
         length: { minimum: 12, maximum: 72 },
         format: {
-          with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+          with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*\z/,
           message: "must include uppercase, lowercase, and number"
         },
         if: :password_digest_changed?
