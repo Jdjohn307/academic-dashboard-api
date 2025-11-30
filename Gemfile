@@ -98,6 +98,8 @@ group :development, :test do
   # Rswag: Seamlessly integrate Swagger with Rails APIs
   # GitHub: https://github.com/rswag/rswag
   gem "rswag"
+
+  gem "dotenv-rails"
 end
 
 group :development do

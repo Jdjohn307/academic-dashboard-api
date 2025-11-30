@@ -20,19 +20,23 @@ Backend API for the Academic Dashboard application, built with Rails 8 and Postg
   cd academic-dashboard-api
 ```
 
-2. Install gems:
+2. Install dependencies:
 ```bash
   bundle install
 ```
 
-3. Generate Secret Key:
+3. Copy `.env.example` to `.env.development` and `.env.test`
+
+4. Update the `.env.*` files with your local database credentials
+
+5. Generate Secret Key:
 ```
   # In Rails console:
   require 'securerandom'
   SecureRandom.hex(64)
 ```
 
-4. Create and migrate the database:
+6. Create and migrate the database:
 ```bash
   bin/rails db:create
   bin/rails db:migrate

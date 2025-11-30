@@ -8,9 +8,9 @@ module Api
       # Validation
       validates :name, presence: true, length: { maximum: 100 }
       validates :email, presence: true, length: { maximum: 255 }, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
-      validates :password, 
+      validates :password,
         length: { minimum: 12, maximum: 72 },
-        format: { 
+        format: {
           with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
           message: "must include uppercase, lowercase, and number"
         },

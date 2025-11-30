@@ -81,7 +81,7 @@ module Api
     def authorize_request
       header = request.headers["Authorization"]
       raise UnauthorizedError, "Missing authorization header" unless header
-      
+
       token = header.split(" ").last
       decoded = JsonWebToken.decode(token)
       raise UnauthorizedError, "Invalid or expired token" unless decoded
