@@ -1,7 +1,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Assignments Access Control", type: :request do
+RSpec.describe "Assignments Role Access", type: :request do
   let!(:user) { create(:user, password: "Password123!", password_confirmation: "Password123!") }
   let(:auth_headers) { auth_header_for(user) }
 
