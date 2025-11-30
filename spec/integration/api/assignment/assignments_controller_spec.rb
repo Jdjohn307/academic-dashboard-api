@@ -36,6 +36,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
         context 'assignments listed default pagination' do
           let(:'options[page]')  { nil }
           let(:'options[limit]') { nil }
+
           run_test! do |response|
             json = JSON.parse(response.body)
             expect(json.fetch('data').length).to eq(25)

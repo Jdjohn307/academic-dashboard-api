@@ -5,6 +5,12 @@ info:
   version: v1
 paths:
   "/api/assignment/assignment_grade_links":
+    parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     get:
       summary: List assignment grade links
       tags:
@@ -22,7 +28,9 @@ paths:
           type: integer
       responses:
         '200':
-          description: empty list
+          description: ok
+        '401':
+          description: unauthorized
     post:
       summary: Create assignment grade link
       tags:
@@ -52,6 +60,11 @@ paths:
               - grade_id
   "/api/assignment/assignment_grade_links/{id}":
     parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     - name: id
       in: path
       required: true
