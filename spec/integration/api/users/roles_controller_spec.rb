@@ -19,6 +19,10 @@ RSpec.describe 'Roles API', swagger_doc: 'v1/swagger.yaml', type: :request do
           expect(json.fetch('data').length).to eq(25)
           expect(json['meta']['page']).to eq(1)
           expect(json['meta']['count']).to eq(26)
+          expect(json['meta']['next']).to eq(2)
+          expect(json['meta']['from']).to eq(1)
+          expect(json['meta']['to']).to eq(25)
+          expect(json['meta']['last']).to eq(2)
         end
       end
 
@@ -31,39 +35,63 @@ RSpec.describe 'Roles API', swagger_doc: 'v1/swagger.yaml', type: :request do
           json = JSON.parse(response.body)
           expect(json.fetch('data').length).to eq(10)
           expect(json['meta']['page']).to eq(2)
+          expect(json['meta']['count']).to eq(26)
+          expect(json['meta']['next']).to eq(3)
+          expect(json['meta']['from']).to eq(11)
+          expect(json['meta']['to']).to eq(20)
           expect(json['meta']['last']).to eq(3)
         end
       end
 
       response '200', 'invalid page fallback' do
         before { create_list(:role, 26) }
-        let(:'options[page]') { -1 }
+        let(:'options[page]')  { -1 }
+        let(:'options[limit]') { nil }
 
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json.fetch('data').length).to eq(25)
           expect(json['meta']['page']).to eq(1)
+          expect(json['meta']['count']).to eq(26)
+          expect(json['meta']['next']).to eq(2)
+          expect(json['meta']['from']).to eq(1)
+          expect(json['meta']['to']).to eq(25)
+          expect(json['meta']['last']).to eq(2)
         end
       end
 
       response '200', 'page only' do
         before { create_list(:role, 26) }
-        let(:'options[page]') { 2 }
+        let(:'options[page]')  { 2 }
+        let(:'options[limit]') { nil }
 
         run_test! do |response|
           json = JSON.parse(response.body)
+          expect(response.status).to eq(200)
           expect(json.fetch('data').length).to eq(1)
           expect(json['meta']['page']).to eq(2)
+          expect(json['meta']['count']).to eq(26)
+          expect(json['meta']['next']).to eq(nil)
+          expect(json['meta']['from']).to eq(26)
+          expect(json['meta']['to']).to eq(26)
+          expect(json['meta']['last']).to eq(2)
         end
       end
 
       response '200', 'limit only' do
         before { create_list(:role, 26) }
+        let(:'options[page]')  { nil }
         let(:'options[limit]') { 5 }
 
         run_test! do |response|
           json = JSON.parse(response.body)
+          expect(response.status).to eq(200)
           expect(json.fetch('data').length).to eq(5)
+          expect(json['meta']['page']).to eq(1)
+          expect(json['meta']['count']).to eq(26)
+          expect(json['meta']['next']).to eq(2)
+          expect(json['meta']['from']).to eq(1)
+          expect(json['meta']['to']).to eq(5)
           expect(json['meta']['last']).to eq(6)
         end
       end

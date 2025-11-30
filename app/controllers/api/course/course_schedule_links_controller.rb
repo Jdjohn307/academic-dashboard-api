@@ -29,7 +29,7 @@ module Api
 
       # PATCH/PUT /api/course/course_schedules_links/:id
       def update
-        authorize_roles!("Administrator", "Teacher", "General Staff")
+        authorize_roles!("Administrator", "Teacher", "Student", "General Staff")
         @course_schedule_link.update!(course_schedule_link_params)
         render jsonapi: @course_schedule_link, status: :ok
       end

@@ -48,12 +48,19 @@ RSpec.describe 'User Role Links API', swagger_doc: 'v1/swagger.yaml', type: :req
 
       response '200', 'page only' do
         before { create_list(:user_role_link, 26, user: user, role: role) }
-        let(:'options[page]') { 2 }
+        let(:'options[page]')  { 2 }
+        let(:'options[limit]') { nil }
 
         run_test! do |response|
           json = JSON.parse(response.body)
+          expect(response.status).to eq(200)
           expect(json.fetch('data').length).to eq(1)
           expect(json['meta']['page']).to eq(2)
+          expect(json['meta']['count']).to eq(26)
+          expect(json['meta']['next']).to eq(nil)
+          expect(json['meta']['from']).to eq(26)
+          expect(json['meta']['to']).to eq(26)
+          expect(json['meta']['last']).to eq(2)
         end
       end
 

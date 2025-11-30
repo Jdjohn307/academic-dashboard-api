@@ -19,7 +19,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
   end
 
   path '/api/assignment/assignments' do
-    parameter name: 'Authorization',   in: :header, type: :string, required: true
+    parameter name: 'Authorization', in: :header, type: :string, required: true
 
     get 'List assignments' do
       tags 'Assignments'
@@ -142,6 +142,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
         let(:'options[page]')  { nil }
         let(:'options[limit]') { nil }
         let(:Authorization) { nil }
+
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['errors'][0]['status']).to eq('401')
@@ -167,7 +168,6 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
         },
         required: [ 'course_schedule_id', 'due_date', 'title', 'points_possible', 'status' ]
       }
-      parameter name: 'Authorization',   in: :header, type: :string, required: true
 
       response '201', 'created' do
         let(:assignment) { attributes_for(:assignment).merge(course_schedule_id: @course_schedule.id) }
@@ -215,7 +215,7 @@ RSpec.describe 'Assignments API', swagger_doc: 'v1/swagger.yaml', type: :request
 
   path '/api/assignment/assignments/{id}' do
     parameter name: :id, in: :path, type: :string, required: true
-    parameter name: 'Authorization',   in: :header, type: :string, required: true
+    parameter name: 'Authorization', in: :header, type: :string, required: true
 
     get 'Show assignment' do
       tags 'Assignments'

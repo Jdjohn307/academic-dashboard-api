@@ -45,12 +45,18 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
 
       response '200', 'invalid page falls back' do
         before { create_list(:user, 26) }
-        let(:'options[page]') { -1 }
+        let(:'options[page]')  { -1 }
+        let(:'options[limit]') { nil }
 
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json.fetch('data').length).to eq(25)
           expect(json['meta']['page']).to eq(1)
+          expect(json['meta']['count']).to eq(26)
+          expect(json['meta']['next']).to eq(2)
+          expect(json['meta']['from']).to eq(1)
+          expect(json['meta']['to']).to eq(25)
+          expect(json['meta']['last']).to eq(2)
         end
       end
 

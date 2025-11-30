@@ -19,7 +19,7 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
   end
 
   path '/api/course/course_schedule_overrides' do
-    parameter name: 'Authorization',   in: :header, type: :string, required: true
+    parameter name: 'Authorization', in: :header, type: :string, required: true
 
     get 'List course schedule overrides' do
       tags 'Course Schedule Overrides'
@@ -149,6 +149,7 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
         let(:'options[page]')  { nil }
         let(:'options[limit]') { nil }
         let(:Authorization) { nil }
+
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['errors'][0]['status']).to eq('401')
@@ -206,7 +207,7 @@ RSpec.describe 'Course Schedule Overrides API', swagger_doc: 'v1/swagger.yaml', 
   end
 
   path '/api/course/course_schedule_overrides/{id}' do
-    parameter name: 'Authorization',   in: :header, type: :string, required: true
+    parameter name: 'Authorization', in: :header, type: :string, required: true
     parameter name: :id, in: :path, type: :string
 
     get 'Show override' do

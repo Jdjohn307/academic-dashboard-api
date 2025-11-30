@@ -19,7 +19,7 @@ RSpec.describe 'Assignment Grade Links API', swagger_doc: 'v1/swagger.yaml', typ
   end
 
   path '/api/assignment/assignment_grade_links' do
-    parameter name: 'Authorization',   in: :header, type: :string, required: true
+    parameter name: 'Authorization', in: :header, type: :string, required: true
 
     get 'List assignment grade links' do
       tags 'Assignment Grade Links'
@@ -199,7 +199,7 @@ RSpec.describe 'Assignment Grade Links API', swagger_doc: 'v1/swagger.yaml', typ
   end
 
   path '/api/assignment/assignment_grade_links/{id}' do
-    parameter name: 'Authorization',   in: :header, type: :string, required: true
+    parameter name: 'Authorization', in: :header, type: :string, required: true
     parameter name: :id, in: :path, type: :string
 
     get 'Show assignment grade link' do

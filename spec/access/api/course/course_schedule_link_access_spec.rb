@@ -6,7 +6,7 @@ RSpec.describe "Course Schedule Link Role Access", type: :request do
   let(:auth_headers) { auth_header_for(user) }
 
   ROLES = [
-    { role_name: 'role_student', perms: { read: 200, create: 403, update: 403, delete: 403 } },
+    { role_name: 'role_student', perms: { read: 200, create: 403, update: 200, delete: 403 } },
     { role_name: 'role_teacher', perms: { read: 200, create: 201, update: 200, delete: 204 } },
     { role_name: 'role_ta', perms: { read: 200, create: 403, update: 403, delete: 403 } },
     { role_name: 'role_general_staff', perms: { read: 200, create: 201, update: 200, delete: 204 } }

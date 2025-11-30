@@ -137,12 +137,7 @@ paths:
       summary: Create assignment
       tags:
       - Assignments
-      parameters:
-      - name: Authorization
-        in: header
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         '201':
           description: created
@@ -239,6 +234,12 @@ paths:
         '401':
           description: unauthorized
   "/api/course/course_schedule_links":
+    parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     get:
       summary: List course schedule links
       tags:
@@ -256,7 +257,9 @@ paths:
           type: integer
       responses:
         '200':
-          description: empty list
+          description: ok
+        '401':
+          description: unauthorized
     post:
       summary: Create course schedule link
       tags:
@@ -284,6 +287,11 @@ paths:
               - course_schedule_id
   "/api/course/course_schedule_links/{id}":
     parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     - name: id
       in: path
       required: true
@@ -330,6 +338,12 @@ paths:
         '404':
           description: not found
   "/api/course/course_schedule_overrides":
+    parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     get:
       summary: List course schedule overrides
       tags:
@@ -347,7 +361,9 @@ paths:
           type: integer
       responses:
         '200':
-          description: empty list
+          description: ok
+        '401':
+          description: unauthorized
     post:
       summary: Create override
       tags:
@@ -381,6 +397,11 @@ paths:
               - status
   "/api/course/course_schedule_overrides/{id}":
     parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     - name: id
       in: path
       required: true
@@ -425,6 +446,12 @@ paths:
         '404':
           description: not found
   "/api/course/course_schedules":
+    parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     get:
       summary: List course schedules
       tags:
@@ -442,7 +469,9 @@ paths:
           type: integer
       responses:
         '200':
-          description: empty list
+          description: ok
+        '401':
+          description: unauthorized
     post:
       summary: Create course schedule
       tags:
@@ -481,6 +510,11 @@ paths:
               - status
   "/api/course/course_schedules/{id}":
     parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     - name: id
       in: path
       required: true
