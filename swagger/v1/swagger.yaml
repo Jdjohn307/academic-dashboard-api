@@ -668,6 +668,12 @@ paths:
         '404':
           description: not found
   "/api/users/grades":
+    parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     get:
       summary: List grades
       tags:
@@ -685,7 +691,9 @@ paths:
           type: integer
       responses:
         '200':
-          description: empty list
+          description: ok
+        '401':
+          description: unauthorized
     post:
       summary: Create grade
       tags:
@@ -719,6 +727,11 @@ paths:
               - status
   "/api/users/grades/{id}":
     parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     - name: id
       in: path
       required: true
@@ -793,6 +806,12 @@ paths:
                 password_confirmation:
                   type: string
   "/api/users/roles":
+    parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     get:
       summary: List roles
       tags:
@@ -810,7 +829,9 @@ paths:
           type: integer
       responses:
         '200':
-          description: empty list
+          description: ok
+        '401':
+          description: unauthorized
     post:
       summary: Create role
       tags:
@@ -836,6 +857,11 @@ paths:
               - status
   "/api/users/roles/{id}":
     parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     - name: id
       in: path
       required: true
@@ -914,6 +940,12 @@ paths:
         '200':
           description: logged out
   "/api/users/user_role_links":
+    parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     get:
       summary: List user-role links
       tags:
@@ -931,7 +963,9 @@ paths:
           type: integer
       responses:
         '200':
-          description: empty list
+          description: ok
+        '401':
+          description: unauthorized
     post:
       summary: Create user-role link
       tags:
@@ -959,6 +993,11 @@ paths:
               - role_id
   "/api/users/user_role_links/{id}":
     parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     - name: id
       in: path
       required: true
@@ -1007,6 +1046,12 @@ paths:
         '404':
           description: not found
   "/api/users/users":
+    parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     get:
       summary: List users
       tags:
@@ -1024,7 +1069,9 @@ paths:
           type: integer
       responses:
         '200':
-          description: empty list
+          description: ok
+        '401':
+          description: unauthorized
     post:
       summary: Create user
       tags:
@@ -1056,6 +1103,11 @@ paths:
               - status
   "/api/users/users/{id}":
     parameters:
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
     - name: id
       in: path
       required: true

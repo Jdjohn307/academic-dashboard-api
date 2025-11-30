@@ -1,124 +1,151 @@
 require 'swagger_helper'
 
 RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
+  # Setup User Authentication
+  let!(:auth_user) { create(:user, password: "Password123!", password_confirmation: "Password123!") }
+  let!(:auth_role) { create(:role) }
+  let!(:auth_user_role_link) { create(:user_role_link, role: auth_role, user: auth_user) }
+
+  let(:auth_headers) { auth_header_for(auth_user) }
+  let(:Authorization) { auth_headers["Authorization"] }
+
   path '/api/users/users' do
+    parameter name: 'Authorization', in: :header, type: :string, required: true
+
     get 'List users' do
       tags 'Users'
       produces 'application/json'
       parameter name: :'options[page]', in: :query, type: :integer, required: false
       parameter name: :'options[limit]', in: :query, type: :integer, required: false
 
-      response '200', 'paginated list' do
-        before { create_list(:user, 26) }
+      before(:context) do
+        create_list(:user, 25)
+      end
 
+      response '200', 'ok' do
+        context 'paginated list' do
+          let(:'options[page]')  { nil }
+          let(:'options[limit]') { nil }
+
+          run_test! do |response|
+            json = JSON.parse(response.body)
+            expect(json.fetch('data').length).to eq(25)
+            expect(json['meta']['page']).to eq(1)
+            expect(json['meta']['count']).to eq(26)
+            expect(json['meta']['next']).to eq(2)
+            expect(json['meta']['from']).to eq(1)
+            expect(json['meta']['to']).to eq(25)
+            expect(json['meta']['last']).to eq(2)
+          end
+        end
+
+        context 'page + limit' do
+          let(:'options[page]')  { 2 }
+          let(:'options[limit]') { 10 }
+
+          run_test! do |response|
+            json = JSON.parse(response.body)
+            expect(json.fetch('data').length).to eq(10)
+            expect(json['meta']['page']).to eq(2)
+            expect(json['meta']['count']).to eq(26)
+            expect(json['meta']['next']).to eq(3)
+            expect(json['meta']['from']).to eq(11)
+            expect(json['meta']['to']).to eq(20)
+            expect(json['meta']['last']).to eq(3)
+          end
+        end
+
+        context 'invalid page falls back' do
+          let(:'options[page]')  { -1 }
+          let(:'options[limit]') { nil }
+
+          run_test! do |response|
+            json = JSON.parse(response.body)
+            expect(json.fetch('data').length).to eq(25)
+            expect(json['meta']['page']).to eq(1)
+            expect(json['meta']['count']).to eq(26)
+            expect(json['meta']['next']).to eq(2)
+            expect(json['meta']['from']).to eq(1)
+            expect(json['meta']['to']).to eq(25)
+            expect(json['meta']['last']).to eq(2)
+          end
+        end
+
+        context 'page only' do
+          let(:'options[page]') { 2 }
+
+          run_test! do |response|
+            json = JSON.parse(response.body)
+            expect(json.fetch('data').length).to eq(1)
+            expect(json['meta']['page']).to eq(2)
+            expect(json['meta']['from']).to eq(26)
+            expect(json['meta']['to']).to eq(26)
+            expect(json['meta']['next']).to be_nil
+            expect(json['meta']['last']).to eq(2)
+          end
+        end
+
+        context 'limit only' do
+          let(:'options[limit]') { 5 }
+
+          run_test! do |response|
+            json = JSON.parse(response.body)
+            expect(json.fetch('data').length).to eq(5)
+            expect(json['meta']['page']).to eq(1)
+            expect(json['meta']['last']).to eq(6)
+          end
+        end
+
+        context 'page beyond last' do
+          let(:'options[page]') { 5 }
+          let(:'options[limit]') { 10 }
+
+          run_test! do |response|
+            json = JSON.parse(response.body)
+            expect(json['data']).to eq([])
+            expect(json['meta']['page']).to eq(5)
+            expect(json['meta']['last']).to eq(3)
+          end
+        end
+
+        context 'invalid limit gracefully' do
+          let(:'options[limit]') { -5 }
+
+          run_test! do |response|
+            json = JSON.parse(response.body)
+            expect(json.fetch('data').length).to eq(25)
+            expect(json['meta']['page']).to eq(1)
+            expect(json['meta']['count']).to eq(26)
+            expect(json['meta']['next']).to eq(2)
+            expect(json['meta']['from']).to eq(1)
+            expect(json['meta']['to']).to eq(25)
+            expect(json['meta']['last']).to eq(2)
+          end
+        end
+
+        context 'empty list' do
+          before do # Mock returning none since we have to keep the auth_user
+            allow(Api::Users::User).to receive(:all).and_return(Api::Users::User.none)
+          end
+
+          run_test! do |response|
+            json = JSON.parse(response.body)
+            expect(json['data']).to eq([])
+            expect(json['meta'].keys).to include('page', 'last', 'from', 'to', 'count', 'next')
+          end
+        end
+      end
+
+      response '401', 'unauthorized' do
         let(:'options[page]')  { nil }
         let(:'options[limit]') { nil }
+        let(:Authorization) { nil }
 
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json.fetch('data').length).to eq(25)
-          expect(json['meta']['page']).to eq(1)
-          expect(json['meta']['count']).to eq(26)
-          expect(json['meta']['next']).to eq(2)
-          expect(json['meta']['from']).to eq(1)
-          expect(json['meta']['to']).to eq(25)
-          expect(json['meta']['last']).to eq(2)
-        end
-      end
-
-      response '200', 'page + limit' do
-        before { create_list(:user, 26) }
-        let(:'options[page]')  { 2 }
-        let(:'options[limit]') { 10 }
-
-        run_test! do |response|
-          json = JSON.parse(response.body)
-          expect(json.fetch('data').length).to eq(10)
-          expect(json['meta']['page']).to eq(2)
-          expect(json['meta']['count']).to eq(26)
-          expect(json['meta']['next']).to eq(3)
-          expect(json['meta']['from']).to eq(11)
-          expect(json['meta']['to']).to eq(20)
-          expect(json['meta']['last']).to eq(3)
-        end
-      end
-
-      response '200', 'invalid page falls back' do
-        before { create_list(:user, 26) }
-        let(:'options[page]')  { -1 }
-        let(:'options[limit]') { nil }
-
-        run_test! do |response|
-          json = JSON.parse(response.body)
-          expect(json.fetch('data').length).to eq(25)
-          expect(json['meta']['page']).to eq(1)
-          expect(json['meta']['count']).to eq(26)
-          expect(json['meta']['next']).to eq(2)
-          expect(json['meta']['from']).to eq(1)
-          expect(json['meta']['to']).to eq(25)
-          expect(json['meta']['last']).to eq(2)
-        end
-      end
-
-      response '200', 'page only' do
-        before { create_list(:user, 26) }
-        let(:'options[page]') { 2 }
-
-        run_test! do |response|
-          json = JSON.parse(response.body)
-          expect(json.fetch('data').length).to eq(1)
-          expect(json['meta']['page']).to eq(2)
-          expect(json['meta']['from']).to eq(26)
-          expect(json['meta']['to']).to eq(26)
-          expect(json['meta']['next']).to be_nil
-          expect(json['meta']['last']).to eq(2)
-        end
-      end
-
-      response '200', 'limit only' do
-        before { create_list(:user, 26) }
-        let(:'options[limit]') { 5 }
-
-        run_test! do |response|
-          json = JSON.parse(response.body)
-          expect(json.fetch('data').length).to eq(5)
-          expect(json['meta']['page']).to eq(1)
-          expect(json['meta']['last']).to eq(6)
-        end
-      end
-
-      response '200', 'page beyond last' do
-        before { create_list(:user, 26) }
-        let(:'options[page]') { 5 }
-        let(:'options[limit]') { 10 }
-
-        run_test! do |response|
-          json = JSON.parse(response.body)
-          expect(json['data']).to eq([])
-          expect(json['meta']['page']).to eq(5)
-          expect(json['meta']['last']).to eq(3)
-        end
-      end
-
-      response '200', 'invalid limit gracefully' do
-        before { create_list(:user, 26) }
-        let(:'options[limit]') { -5 }
-
-        run_test! do |response|
-          json = JSON.parse(response.body)
-          expect(json.fetch('data').length).to eq(25)
-          expect(json['meta']['page']).to eq(1)
-        end
-      end
-
-      response '200', 'empty list' do
-        let(:'options[page]') { nil }
-        let(:'options[limit]') { nil }
-
-        run_test! do |response|
-          json = JSON.parse(response.body)
-          expect(json['data']).to eq([])
-          expect(json['meta'].keys).to include('page', 'last', 'from', 'to', 'count', 'next')
+          expect(json['errors'][0]['status']).to eq('401')
+          expect(json['errors'][0]['title']).to eq('Unauthorized')
+          expect(json['errors'][0]['detail']).to match(/Invalid or expired token/)
         end
       end
     end
@@ -151,25 +178,28 @@ RSpec.describe 'Users API', swagger_doc: 'v1/swagger.yaml', type: :request do
         end
       end
 
-      response '422', 'missing' do
-        let(:user) { {} }
-        run_test! do |response|
-          json = JSON.parse(response.body)
-          expect(json['errors']).to be_present
-        end
-      end
-
       response '422', 'unprocessable' do
-        let(:user) { attributes_for(:user, :user_invalid_status) }
-        run_test! do |response|
-          json = JSON.parse(response.body)
-          expect(json['errors']).to be_present
+        context 'missing' do
+          let(:user) { {} }
+          run_test! do |response|
+            json = JSON.parse(response.body)
+            expect(json['errors']).to be_present
+          end
+        end
+
+        context 'unprocessable' do
+          let(:user) { attributes_for(:user, :user_invalid_status) }
+          run_test! do |response|
+            json = JSON.parse(response.body)
+            expect(json['errors']).to be_present
+          end
         end
       end
     end
   end
 
   path '/api/users/users/{id}' do
+    parameter name: 'Authorization', in: :header, type: :string, required: true
     parameter name: :id, in: :path, type: :string
 
     get 'Show user' do
