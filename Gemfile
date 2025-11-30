@@ -108,5 +108,5 @@ group :test do
 
   # Shoulda Matchers: RSpec matchers for testing validations and associations
   # GitHub: [https://github.com/thoughtbot/shoulda-matchers]
-  gem "shoulda-matchers", "~> 6.0"
+  gem "shoulda-matchers", "~> 7.0"
 end
