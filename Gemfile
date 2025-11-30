@@ -46,6 +46,10 @@ gem "bcrypt", "~> 3.1.20"
 # Github: https://github.com/jwt/ruby-jwt
 gem "jwt"
 
+# Rate Limitting / Throttling
+# Github: https://github.com/rack/rack-attack
+gem "rack-attack"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
