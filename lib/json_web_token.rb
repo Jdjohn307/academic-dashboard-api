@@ -1,7 +1,7 @@
 require "jwt"
 
 class JsonWebToken
- SECRET_KEY = Rails.application.credentials.jwt_secret!
+ SECRET_KEY = ENV.fetch("JWT_SECRET") { Rails.application.credentials.jwt_secret }
 
 
   def self.encode(payload, exp = 24.hours.from_now)
