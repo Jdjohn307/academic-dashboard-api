@@ -43,6 +43,7 @@ jobs:
       - name: Lint code for consistent style
         run: bin/rubocop -f simple
 
+  # .github/workflows/ci.yml
   test:
     runs-on: ubuntu-latest
 
@@ -55,12 +56,6 @@ jobs:
         ports:
           - 5432:5432
         options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
-
-      # redis:
-      #   image: redis
-      #   ports:
-      #     - 6379:6379
-      #   options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - name: Install packages
@@ -81,8 +76,9 @@ jobs:
       - name: Setup test database
         env:
           RAILS_ENV: test
-          DB_USERNAME: dev_rails
-          DB_PASSWORD: dev
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/rails_proj_test
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
           DB_HOST: localhost
         run: |
           bin/rails db:create
@@ -91,8 +87,9 @@ jobs:
       - name: Run tests
         env:
           RAILS_ENV: test
-          DB_USERNAME: dev_rails
-          DB_PASSWORD: dev
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/rails_proj_test
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
           DB_HOST: localhost
         run: |
           bundle exec rspec
