@@ -75,6 +75,7 @@ Rails.application.configure do
   config.lograge.custom_options = lambda do |event|
     {
       user_id: event.payload[:user_id],
-      params: event.payload[:params].except('controller', 'action')
+      params: event.payload[:params].except("controller", "action")
     }
+  end
 end

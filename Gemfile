@@ -99,7 +99,11 @@ group :development, :test do
   # GitHub: https://github.com/rswag/rswag
   gem "rswag"
 
+  # ENV configuration
   gem "dotenv-rails"
+
+  # Logging
+  gem "lograge"
 end
 
 group :development do
