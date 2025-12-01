@@ -1,3 +1,5 @@
+**This is a Work In Progress**
+
 # Academic Dashboard API
 
 Backend API for the Academic Dashboard application, built with Rails 8 and PostgreSQL.
