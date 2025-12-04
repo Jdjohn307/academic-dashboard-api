@@ -87,6 +87,40 @@ The database includes three main schemas:
 
 > See `db/schema.rb` for the full schema.
 
+## Seeding the database
+
+* Run the rails command to seed the database in your terminal
+```bash
+  rails db:seed
+```
+
+* You should see output like the following example upon the seed finishing.
+```bash
+
+==================================================
+Seed completed successfully!
+==================================================
+Created:
+  - 5 roles
+  - 67 users
+  - 67 role assignments
+  - xx courses
+  - xx course schedules
+  - xxx enrollments
+  - xx schedule overrides
+  - xxx grade records
+  - xxx assignments
+  - xxxx submissions
+
+Test credentials:
+  Admin: email@address.example
+  Teacher: email@address.example
+  Student: email@address.example
+  Password for all: SecurePassword123!
+==================================================
+```
+> See `db/seeds.rb` for the full seed.
+
 ## Dependencies
 
 Key gems used in the project:

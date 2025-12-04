@@ -99,11 +99,17 @@ group :development, :test do
   # GitHub: https://github.com/rswag/rswag
   gem "rswag"
 
-  # ENV configuration
+  # dotenv: A Ruby gem to load environment variables from `.env`.
+  # GitHub: https://github.com/bkeepers/dotenv
   gem "dotenv-rails"
 
-  # Logging
+  # Lograge: Development Logging
+  # GitHub: https://github.com/roidrage/lograge
   gem "lograge"
+
+  # Faker: A library for generating fake data such as names, addresses, and phone numbers.
+  # GitHub: https://github.com/faker-ruby/faker
+  gem "faker"
 end
 
 group :development do
