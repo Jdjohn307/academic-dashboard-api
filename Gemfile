@@ -31,7 +31,7 @@ gem "jsonapi-rails", "~> 0.4.1"
 
 # Fast and efficient pagination library for Ruby on Rails.
 # Docs: https://ddnexus.github.io/pagy/guides/quick-start/
-gem "pagy", "~> 43.1" # Omit the patch segment to avoid breaking changes
+gem "pagy", "~> 43.2" # Omit the patch segment to avoid breaking changes
 
 # Fast and flexible serializer for generating JSON:API-compliant output.
 # Successor to fast_jsonapi — compatible with jsonapi-rails.
